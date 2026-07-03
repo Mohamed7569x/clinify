@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clinify — حوّل عيادتك إلى تجربة رقمية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #070B14;
+      --bg-card: rgba(255,255,255,0.03);
+      --bg-card-hover: rgba(255,255,255,0.06);
+      --accent: #3CEAA8;
+      --accent-dim: rgba(60,234,168,0.15);
+      --accent-glow: rgba(60,234,168,0.4);
+      --text-primary: #F0F2F5;
+      --text-secondary: #8A9AB5;
+      --text-muted: #4E5D78;
+      --border: rgba(255,255,255,0.06);
+      --gradient-1: linear-gradient(135deg, #3CEAA8 0%, #0EA5E9 100%);
+      --gradient-2: linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --container: 1200px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Cairo', 'Tajawal', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 9999;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+    }
+
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      animation: float 20s ease-in-out infinite;
+    }
+    .glow-orb.a { width: 600px; height: 600px; background: rgba(60,234,168,0.07); top: -200px; right: -100px; }
+    .glow-orb.b { width: 500px; height: 500px; background: rgba(14,165,233,0.06); bottom: -150px; left: -100px; animation-delay: -7s; }
+    .glow-orb.c { width: 400px; height: 400px; background: rgba(139,92,246,0.05); top: 40%; right: 50%; animation-delay: -13s; }
+
+    @keyframes float {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(-30px,-40px) scale(1.05); }
+      66% { transform: translate(20px,30px) scale(0.95); }
+    }
+
+    section { position: relative; z-index: 1; }
+
+    nav {
+      position: fixed;
+      top: 0; right: 0; left: 0;
+      z-index: 100;
+      padding: 16px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7,11,20,0.75);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.3rem;
+      text-decoration: none;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+
+    .nav-logo .icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: var(--gradient-1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--bg-primary);
+      box-shadow: 0 10px 30px rgba(60,234,168,0.2);
+    }
+
+    .nav-center {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-center a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.96rem;
+      font-weight: 600;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .nav-center a::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      right: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+
+    .nav-center a:hover { color: var(--text-primary); }
+    .nav-center a:hover::after { width: 100%; }
+
+    .nav-auth {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-login,
+    .btn-register,
+    .btn-primary,
+    .btn-secondary {
+      text-decoration: none;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .btn-login {
+      padding: 10px 22px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      background: transparent;
+    }
+    .btn-login:hover {
+      background: var(--bg-card);
+      border-color: rgba(255,255,255,0.14);
+    }
+
+    .btn-register,
+    .btn-primary {
+      padding: 12px 26px;
+      font-size: 0.94rem;
+      font-weight: 800;
+      color: var(--bg-primary);
+      background: var(--gradient-1);
+      border: none;
+      box-shadow: 0 8px 32px rgba(60,234,168,0.18);
+    }
+
+    .btn-register:hover,
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 36px var(--accent-glow);
+    }
+
+    .btn-secondary {
+      padding: 12px 26px;
+      font-size: 0.94rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      background: transparent;
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: var(--bg-card);
+      border-color: rgba(255,255,255,0.14);
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 140px 24px 90px;
+    }
+
+    .hero-container {
+      width: 100%;
+      max-width: var(--container);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .hero-content { text-align: right; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero-badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 6vw, 5.1rem);
+      font-weight: 800;
+      line-height: 1.18;
+      letter-spacing: -1.6px;
+      max-width: 700px;
+      animation: fadeUp 0.8s 0.15s ease both;
+    }
+
+    .hero h1 .highlight {
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      margin-top: 22px;
+      max-width: 620px;
+      font-size: 1.06rem;
+      color: var(--text-secondary);
+      line-height: 1.9;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+
+    .hero-actions {
+      margin-top: 36px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.8s 0.45s ease both;
+    }
+
+    .hero-visual {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      box-shadow: 0 40px 120px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.04);
+      animation: fadeUp 0.8s 0.6s ease both;
+    }
+
+    .mockup-bar {
+      display: flex;
+      gap: 7px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      justify-content: flex-start;
+      direction: ltr;
+    }
+
+    .mockup-bar span {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      opacity: 0.55;
+    }
+
+    .mockup-body {
+      padding: 26px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .dashboard-panel,
+    .stat-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .dashboard-panel {
+      padding: 22px;
+      grid-row: span 2;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .panel-title h3 {
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .panel-title span {
+      font-size: 0.8rem;
+      color: var(--accent);
+      background: var(--accent-dim);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .appointment-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.02);
+      margin-bottom: 10px;
+    }
+
+    .appointment-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(60,234,168,0.22), rgba(14,165,233,0.18));
+      flex-shrink: 0;
+    }
+
+    .appointment-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .appointment-info strong {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .appointment-info span,
+    .appointment-time {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    .stat-card {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 132px;
+    }
+
+    .label {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      letter-spacing: 0.4px;
+    }
+
+    .value {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .value.green { color: var(--accent); }
+    .value.blue { color: #0EA5E9; }
+    .value.purple { color: #8B5CF6; }
+
+    .bar {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-top: auto;
+    }
+
+    .fill { height: 100%; border-radius: 999px; }
+    .fill-green { background: var(--gradient-1); width: 78%; }
+    .fill-blue { background: var(--gradient-2); width: 62%; }
+    .fill-purple { background: linear-gradient(135deg,#8B5CF6,#EC4899); width: 91%; }
+
+    .why-digital,
+    .features,
+    .how,
+    .apps {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 120px 48px;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .section-label::before {
+      content: '';
+      width: 24px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      font-weight: 800;
+      line-height: 1.35;
+      letter-spacing: -0.9px;
+      max-width: 720px;
+    }
+
+    .sub {
+      color: var(--text-secondary);
+      max-width: 620px;
+      line-height: 1.9;
+      margin-top: 14px;
+      font-size: 1rem;
+    }
+
+    .why-grid,
+    .features-grid,
+    .steps {
+      margin-top: 54px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .why-grid { grid-template-columns: repeat(4, 1fr); }
+    .features-grid { grid-template-columns: repeat(3, 1fr); }
+    .steps { grid-template-columns: repeat(3, 1fr); counter-reset: step; }
+
+    .why-card,
+    .feature-card,
+    .step,
+    .app-card,
+    .cta-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .why-card,
+    .feature-card,
+    .step {
+      transition: 0.3s ease;
+    }
+
+    .why-card:hover,
+    .feature-card:hover,
+    .step:hover {
+      transform: translateY(-4px);
+      background: var(--bg-card-hover);
+      border-color: rgba(60,234,168,0.14);
+    }
+
+    .why-card {
+      padding: 30px 22px;
+      text-align: right;
+    }
+
+    .why-card .w-icon {
+      font-size: 2rem;
+      display: inline-flex;
+      margin-bottom: 14px;
+    }
+
+    .why-card h3,
+    .feature-card h3,
+    .step h3 {
+      font-size: 1.08rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .why-card p,
+    .feature-card p,
+    .step p {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .feature-card {
+      padding: 32px 24px;
+    }
+
+    .f-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 18px;
+    }
+
+    .f-icon.green  { background: var(--accent-dim); }
+    .f-icon.blue   { background: rgba(14,165,233,0.12); }
+    .f-icon.purple { background: rgba(139,92,246,0.12); }
+
+    .step {
+      counter-increment: step;
+      padding: 34px 26px;
+      position: relative;
+    }
+
+    .step::before {
+      content: counter(step, decimal-leading-zero);
+      display: block;
+      font-size: 3.8rem;
+      line-height: 1;
+      margin-bottom: 14px;
+      font-weight: 800;
+      opacity: 0.18;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .apps > .sub { max-width: 720px; }
+
+    .apps-showcase {
+      margin-top: 56px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .app-card {
+      overflow: hidden;
+      position: relative;
+      transition: border-color 0.3s ease;
+    }
+
+    .app-card:hover { border-color: rgba(255,255,255,0.12); }
+
+    .app-card::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; left: 0;
+      height: 3px;
+    }
+
+    .doctor-app::before { background: var(--gradient-1); }
+    .patient-app::before { background: var(--gradient-2); }
+
+    .app-card-header { padding: 34px 30px 0; }
+    .app-card-header h3 {
+      font-size: 1.34rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .app-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .app-card-body { padding: 24px 30px 0; }
+
+    .app-features-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .app-features-list li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .check {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .doctor-app .check { background: var(--accent-dim); color: var(--accent); }
+    .patient-app .check { background: rgba(14,165,233,0.12); color: #0EA5E9; }
+
+    .app-store-btns {
+      display: flex;
+      gap: 12px;
+      padding: 26px 30px;
+      flex-wrap: wrap;
+    }
+
+    .store-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: 0.2s ease;
+    }
+
+    .store-btn:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    .store-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.06);
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .store-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .store-text .small {
+      font-size: 0.63rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .store-text .big {
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .phone-mockup-area {
+      display: flex;
+      justify-content: center;
+      padding: 14px 30px 0;
+    }
+
+    .phone-mockup {
+      width: 210px;
+      height: 420px;
+      background: #101827;
+      border-radius: 30px;
+      border: 3px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      direction: rtl;
+    }
+
+    .notch {
+      width: 104px;
+      height: 22px;
+      background: #000;
+      border-radius: 0 0 14px 14px;
+      margin: 0 auto;
+    }
+
+    .phone-screen {
+      padding: 12px 14px;
+      height: calc(100% - 22px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);
+    }
+
+    .screen-header {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .screen-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .doctor-app .avatar { background: var(--accent-dim); }
+    .patient-app .avatar { background: rgba(14,165,233,0.15); }
+
+    .item-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .item-text .name {
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .item-text .detail,
+    .item-time {
+      font-size: 0.5rem;
+      color: var(--text-muted);
+    }
+
+    .cta-section {
+      padding: 120px 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .cta-box {
+      width: 100%;
+      max-width: 860px;
+      text-align: center;
+      padding: 70px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, var(--accent-dim), transparent 40%, rgba(139,92,246,0.1));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    .cta-box p {
+      color: var(--text-secondary);
+      margin-top: 14px;
+      line-height: 1.9;
+      font-size: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-box .btn-primary {
+      margin-top: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 40px 48px 50px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      color: var(--text-muted);
+      font-size: 0.86rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+
+    footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    footer a:hover { color: var(--text-primary); }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 1100px) {
+      .hero-container,
+      .apps-showcase,
+      .features-grid,
+      .steps,
+      .why-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero-container { align-items: stretch; }
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 14px 20px; }
+      .nav-center { display: none; }
+      .hero { padding-top: 120px; }
+      .hero-container { grid-template-columns: 1fr; }
+      .mockup-body { grid-template-columns: 1fr; }
+      .dashboard-panel { grid-row: auto; }
+      .why-grid,
+      .features-grid,
+      .steps,
+      .apps-showcase { grid-template-columns: 1fr; }
+      .why-digital,
+      .features,
+      .how,
+      .apps { padding: 84px 24px; }
+      footer {
+        flex-direction: column;
+        text-align: center;
+        padding: 32px 24px 42px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .nav-auth .btn-login { display: none; }
+      .hero-actions,
+      .app-store-btns { flex-direction: column; }
+      .btn-register,
+      .btn-primary,
+      .btn-secondary,
+      .store-btn { width: 100%; }
+      .section-title { line-height: 1.5; }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-orb a"></div>
+  <div class="glow-orb b"></div>
+  <div class="glow-orb c"></div>
+
+  <nav>
+    <a href="#" class="nav-logo">
+      <span class="icon">✦</span>
+      <span>Clinify</span>
+    </a>
+
+    <ul class="nav-center">
+      <li><a href="#why">لماذا التحول الرقمي</a></li>
+      <li><a href="#features">المميزات</a></li>
+      <li><a href="#how">كيف يعمل</a></li>
+      <li><a href="#apps">التطبيقات</a></li>
+    </ul>
+
+    <div class="nav-auth">
+      <a href="/login" class="btn-login">تسجيل الدخول</a>
+      <a href="/register" class="btn-register">ابدأ الآن</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          مستقبل إدارة العيادات يبدأ من هنا
+        </div>
+
+        <h1>
+          حوّل عيادتك إلى
+          <span class="highlight">تجربة رقمية متكاملة</span>
+        </h1>
+
+        <p>
+          منصة واحدة لإدارة العيادة بالكامل: لوحة تحكم للإدارة، وتطبيقات مخصصة للأطباء والمرضى،
+          مع مواعيد وسجلات ووصفات وإشعارات في مكان واحد.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#cta" class="btn-primary">سجّل عيادتك الآن</a>
+          <a href="#apps" class="btn-secondary">استعرض التطبيقات</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="mockup-bar"><span></span><span></span><span></span></div>
+        <div class="mockup-body">
+          <div class="dashboard-panel">
+            <div class="panel-title">
+              <h3>مواعيد اليوم</h3>
+              <span>مباشر</span>
+            </div>
+
+            <div class="appointment-item">
+              <div class="appointment-avatar"></div>
+              <div class="appointment-info">
+                <strong>أحمد حسن</strong>
+                <span>كشف عام</span>
+              </div>
+              <div class="appointment-time">09:00 ص</div>
+            </div>
+
+            <div class="appointment-item">
+              <div class="appointment-avatar"></div>
+              <div class="appointment-info">
+                <strong>سارة محمد</strong>
+                <span>متابعة</span>
+              </div>
+              <div class="appointment-time">09:30 ص</div>
+            </div>
+
+            <div class="appointment-item">
+              <div class="appointment-avatar"></div>
+              <div class="appointment-info">
+                <strong>عمر علي</strong>
+                <span>مراجعة نتائج التحاليل</span>
+              </div>
+              <div class="appointment-time">10:00 ص</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <span class="label">المرضى النشطون</span>
+            <span class="value green">2,847</span>
+            <div class="bar"><div class="fill fill-green"></div></div>
+          </div>
+
+          <div class="stat-card">
+            <span class="label">مواعيد اليوم</span>
+            <span class="value blue">38</span>
+            <div class="bar"><div class="fill fill-blue"></div></div>
+          </div>
+
+          <div class="stat-card">
+            <span class="label">السجلات الرقمية</span>
+            <span class="value purple">12.4k</span>
+            <div class="bar"><div class="fill fill-purple"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="why-digital" id="why">
+    <div class="reveal">
+      <div class="section-label">لماذا Clinify</div>
+      <h2 class="section-title">لأن عيادتك تستحق أكثر من الورق والجداول التقليدية</h2>
+      <p class="sub">
+        انتقل من الإدارة اليدوية إلى تجربة حديثة وسريعة وواضحة تساعدك على خدمة المرضى بشكل أفضل وإدارة الفريق بكفاءة أعلى.
+      </p>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <span class="w-icon">⚡</span>
+        <h3>وفّر وقتك يوميًا</h3>
+        <p>قلّل المكالمات والتنظيم اليدوي والملفات الورقية، واترك المهام المتكررة للنظام.</p>
+      </div>
+
+      <div class="why-card reveal">
+        <span class="w-icon">📉</span>
+        <h3>خفّض الأخطاء</h3>
+        <p>لا مزيد من الحجز المكرر أو الملفات المفقودة، كل شيء موثّق ومنظم وواضح.</p>
+      </div>
+
+      <div class="why-card reveal">
+        <span class="w-icon">📱</span>
+        <h3>تجربة موبايل حقيقية</h3>
+        <p>تطبيقات مستقلة للأطباء والمرضى على Android و iOS لتجربة أسهل وأسرع.</p>
+      </div>
+
+      <div class="why-card reveal">
+        <span class="w-icon">📊</span>
+        <h3>رؤية أوضح للعيادة</h3>
+        <p>تابع الأداء والمواعيد وعدد المرضى والإيرادات من خلال لوحة تحكم واحدة.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="reveal">
+      <div class="section-label">مميزات المنصة</div>
+      <h2 class="section-title">كل ما تحتاجه لتشغيل عيادتك بشكل رقمي متكامل</h2>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="f-icon green">📅</div>
+        <h3>حجز ذكي للمواعيد</h3>
+        <p>المريض يحجز من التطبيق، والطبيب يدير مواعيده، والإدارة تتابع كل شيء لحظة بلحظة.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="f-icon blue">🔒</div>
+        <h3>أمان وخصوصية</h3>
+        <p>لكل عيادة مساحة منفصلة ومعرّف خاص، مع صلاحيات مختلفة لكل دور لحماية البيانات.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="f-icon purple">📋</div>
+        <h3>سجلات رقمية</h3>
+        <p>الوصفات والزيارات والتحاليل والتاريخ الطبي في ملف واحد قابل للبحث والوصول السريع.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="f-icon green">👥</div>
+        <h3>إدارة الفريق</h3>
+        <p>أضف الأطباء ونظّم الصلاحيات وراقب ضغط العمل وسهّل التنسيق بين أفراد الفريق.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="f-icon blue">📊</div>
+        <h3>لوحة تحليلات</h3>
+        <p>اعرف اتجاهات المواعيد وحركة المرضى والأداء العام من خلال لوحة احترافية واضحة.</p>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="f-icon purple">🔔</div>
+        <h3>إشعارات تلقائية</h3>
+        <p>تذكير للمريض، وتنبيهات للطبيب، وتحديثات فورية للإدارة بدون مجهود إضافي.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <div class="reveal">
+      <div class="section-label">كيف يعمل</div>
+      <h2 class="section-title">ابدأ التحول الرقمي في ثلاث خطوات بسيطة</h2>
+    </div>
+
+    <div class="steps">
+      <div class="step reveal">
+        <h3>سجّل العيادة</h3>
+        <p>أنشئ حساب الإدارة، وأضف بيانات العيادة والتخصصات ومواعيد العمل والموقع.</p>
+      </div>
+
+      <div class="step reveal">
+        <h3>أضف فريقك</h3>
+        <p>قم بإضافة الأطباء من لوحة التحكم، ثم يبدأ كل طبيب استخدام تطبيقه مباشرة.</p>
+      </div>
+
+      <div class="step reveal">
+        <h3>دع المرضى ينضمون</h3>
+        <p>شارك كود العيادة أو المعرّف الخاص بها، ليتمكن المرضى من التسجيل والحجز بسهولة.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="apps" id="apps">
+    <div class="reveal">
+      <div class="section-label">التطبيقات</div>
+      <h2 class="section-title">تطبيقات مخصصة للأطباء والمرضى</h2>
+      <p class="sub">
+        متاحة على Android و iOS، ومصممة لتقديم تجربة سريعة وسلسة تشبه التطبيقات الأصلية تمامًا.
+      </p>
+    </div>
+
+    <div class="apps-showcase">
+      <div class="app-card doctor-app reveal">
+        <div class="app-card-header">
+          <h3>Clinify Doctor</h3>
+          <span class="app-subtitle">لإدارة المرضى والوصفات والمواعيد بسهولة أثناء العمل أو التنقل</span>
+        </div>
+
+        <div class="app-card-body">
+          <ul class="app-features-list">
+            <li><span class="check">✓</span> عرض وإدارة مواعيد اليوم</li>
+            <li><span class="check">✓</span> الوصول الكامل لملفات المرضى</li>
+            <li><span class="check">✓</span> كتابة وصفات رقمية</li>
+            <li><span class="check">✓</span> تعديل التوفر والجدول</li>
+            <li><span class="check">✓</span> استلام إشعارات فورية</li>
+          </ul>
+        </div>
+
+        <div class="app-store-btns">
+          <a href="#" class="store-btn">
+            <span class="store-icon">▶</span>
+            <span class="store-text">
+              <span class="small">حمّله من</span>
+              <span class="big">Google Play</span>
+            </span>
+          </a>
+          <a href="#" class="store-btn">
+            <span class="store-icon"></span>
+            <span class="store-text">
+              <span class="small">حمّله من</span>
+              <span class="big">App Store</span>
+            </span>
+          </a>
+        </div>
+
+        <div class="phone-mockup-area">
+          <div class="phone-mockup">
+            <div class="notch"></div>
+            <div class="phone-screen">
+              <div class="screen-header">مواعيد اليوم</div>
+              <div class="screen-item">
+                <div class="avatar"></div>
+                <div class="item-text"><span class="name">أحمد حسن</span><span class="detail">كشف عام</span></div>
+                <span class="item-time">09:00 ص</span>
+              </div>
+              <div class="screen-item">
+                <div class="avatar"></div>
+                <div class="item-text"><span class="name">سارة محمد</span><span class="detail">متابعة</span></div>
+                <span class="item-time">09:30 ص</span>
+              </div>
+              <div class="screen-item">
+                <div class="avatar"></div>
+                <div class="item-text"><span class="name">عمر علي</span><span class="detail">نتائج تحاليل</span></div>
+                <span class="item-time">10:00 ص</span>
+              </div>
+              <div class="screen-item">
+                <div class="avatar"></div>
+                <div class="item-text"><span class="name">منى إبراهيم</span><span class="detail">تجديد وصفة</span></div>
+                <span class="item-time">10:30 ص</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-card patient-app reveal">
+        <div class="app-card-header">
+          <h3>Clinify Patient</h3>
+          <span class="app-subtitle">للحجز ومتابعة الوصفات والسجل الطبي والبقاء على اتصال دائم مع العيادة</span>
+        </div>
+
+        <div class="app-card-body">
+          <ul class="app-features-list">
+            <li><span class="check">✓</span> حجز وإدارة المواعيد</li>
+            <li><span class="check">✓</span> عرض الوصفات والتاريخ الطبي</li>
+            <li><span class="check">✓</span> التسجيل الذاتي بكود العيادة</li>
+            <li><span class="check">✓</span> استقبال التذكيرات والتنبيهات</li>
+            <li><span class="check">✓</span> تقييم التجربة ومراجعتها</li>
+          </ul>
+        </div>
+
+        <div class="app-store-btns">
+          <a href="#" class="store-btn">
+            <span class="store-icon">▶</span>
+            <span class="store-text">
+              <span class="small">حمّله من</span>
+              <span class="big">Google Play</span>
+            </span>
+          </a>
+          <a href="#" class="store-btn">
+            <span class="store-icon"></span>
+            <span class="store-text">
+              <span class="small">حمّله من</span>
+              <span class="big">App Store</span>
+            </span>
+          </a>
+        </div>
+
+        <div class="phone-mockup-area">
+          <div class="phone-mockup">
+            <div class="notch"></div>
+            <div class="phone-screen">
+              <div class="screen-header">الزيارات القادمة</div>
+              <div class="screen-item">
+                <div class="avatar"></div>
+                <div class="item-text"><span class="name">د. خالد ناصر</span><span class="detail">طب عام</span></div>
+                <span class="item-time">غدًا</span>
+              </div>
+              <div class="screen-item">
+                <div class="avatar"></div>
+                <div class="item-text"><span class="name">د. ليلى فاروق</span><span class="detail">جلدية</span></div>
+                <span class="item-time">8 مارس</span>
+              </div>
+              <div class="screen-item">
+                <div class="avatar"></div>
+                <div class="item-text"><span class="name">نتائج التحاليل</span><span class="detail">النتيجة جاهزة</span></div>
+                <span class="item-time">عرض</span>
+              </div>
+              <div class="screen-item">
+                <div class="avatar"></div>
+                <div class="item-text"><span class="name">الوصفة الطبية</span><span class="detail">Amoxicillin 500mg</span></div>
+                <span class="item-time">نشطة</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section" id="cta">
+    <div class="cta-box reveal">
+      <h2 class="section-title">جاهز تنقل عيادتك للمستوى القادم؟</h2>
+      <p>ابدأ اليوم ووفّر على فريقك الوقت، وامنح مرضاك تجربة أكثر احترافية وتنظيمًا.</p>
+      <a href="#" class="btn-primary">سجّل عيادتك الآن</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Clinify. جميع الحقوق محفوظة.</span>
+    <div class="footer-links">
+      <a href="#">الخصوصية</a>
+      <a href="#">الشروط والأحكام</a>
+      <a href="#">تواصل معنا</a>
+    </div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

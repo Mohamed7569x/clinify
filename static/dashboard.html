@@ -1,0 +1,3528 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Clinify — لوحة إدارة العيادة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F6F8FC;--bg2:#EEF3FB;
+  --card:#FFFFFF;--card-h:#F8FBFF;--card-solid:#FFFFFF;
+  --glass:#F8FAFD;--glass-b:#E1E8F2;
+  --blue:#4C8DFF;--blue-g:rgba(76,141,255,0.12);--blue-s:rgba(76,141,255,0.07);
+  --teal:#1EC98F;--teal-g:rgba(30,201,143,0.12);
+  --red:#E8555A;--red-g:rgba(232,85,90,0.12);
+  --amber:#F5A623;--amber-g:rgba(245,166,35,0.12);
+  --purple:#9572F5;--purple-g:rgba(149,114,245,0.12);
+  --text:#172033;--dim:#64748B;--faint:#94A3B8;
+  --border:#E6ECF5;--border-l:#D9E3F0;
+  --r:12px;--rs:8px;--rl:16px;
+  --font-d:'Cairo',sans-serif;--font-b:'Cairo',sans-serif;
+  --shadow:0 12px 32px rgba(15, 23, 42, 0.08);
+  --sw:256px;--hh:60px;
+}
+html{font-size:14.5px}
+body{font-family:var(--font-b);background:linear-gradient(180deg,#f8fbff 0%, var(--bg) 100%);color:var(--text);min-height:100vh;overflow-x:hidden;direction:rtl;text-align:right}
+body::before{content:'';position:fixed;top:-25%;right:-10%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(76,141,255,0.10)0%,transparent 65%);pointer-events:none}
+body::after{content:'';position:fixed;bottom:-25%;left:-10%;width:55vw;height:55vw;background:radial-gradient(circle,rgba(30,201,143,0.08)0%,transparent 65%);pointer-events:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--glass-b);border-radius:3px}
+
+.sb{position:fixed;top:0;right:0;width:var(--sw);height:100vh;background:rgba(255,255,255,0.92);border-left:1px solid var(--border);backdrop-filter:blur(24px);display:flex;flex-direction:column;z-index:200;transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:var(--shadow)}
+.sb-brand{padding:18px 20px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--border)}
+.sb-logo{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--teal));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;flex-shrink:0}
+.sb-brand h1{font-family:var(--font-d);font-size:1.15rem;font-weight:700;background:linear-gradient(135deg,var(--blue),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sb-brand small{font-size:.65rem;color:var(--faint);display:block;margin-top:-1px;font-weight:400}
+.sb-nav{flex:1;padding:14px 10px;overflow-y:auto}
+.sb-label{font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);padding:14px 14px 5px}
+.sb-item{display:flex;align-items:center;gap:11px;padding:9px 14px;border-radius:var(--rs);color:var(--dim);cursor:pointer;transition:all .18s;font-size:.87rem;font-weight:450;position:relative;margin-bottom:1px}
+.sb-item i{font-size:1.1rem;width:20px;text-align:center}
+.sb-item:hover{color:var(--text);background:var(--card)}
+.sb-item.act{color:var(--blue);background:var(--blue-s)}
+.sb-item.act::before{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);width:3px;height:18px;background:var(--blue);border-radius:3px 0 0 3px}
+.sb-badge{margin-right:auto;background:var(--red);color:#fff;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:10px;line-height:1.5;min-width:18px;text-align:center}
+.sb-foot{padding:12px;border-top:1px solid var(--border)}
+.sb-user{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--rs);cursor:pointer;transition:background .2s}
+.sb-user:hover{background:var(--card)}
+.sb-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;color:#fff;flex-shrink:0}
+.sb-info{flex:1;min-width:0}.sb-info .n{font-size:.82rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sb-info .r{font-size:.68rem;color:var(--dim)}
+
+.mn{margin-right:var(--sw);min-height:100vh;position:relative;z-index:1}
+.hd{height:var(--hh);display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid var(--border);backdrop-filter:blur(12px);background:rgba(255,255,255,.88);position:sticky;top:0;z-index:100}
+.hd-l{display:flex;align-items:center;gap:14px}
+.ham{display:none;background:none;border:none;color:var(--text);font-size:1.3rem;cursor:pointer;padding:4px}
+.hd-title{font-family:var(--font-d);font-size:1.1rem;font-weight:600}
+.hd-r{display:flex;align-items:center;gap:10px}
+.hd-btn{width:36px;height:36px;border:1px solid var(--border);border-radius:var(--rs);background:var(--card);color:var(--dim);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;position:relative;transition:all .2s}
+.hd-btn:hover{background:var(--card-h);color:var(--text)}
+.hd-btn .dot{position:absolute;top:7px;left:7px;width:6px;height:6px;background:var(--red);border-radius:50%;border:1.5px solid var(--bg)}
+.branch-badge{display:flex;align-items:center;gap:7px;padding:5px 13px;background:var(--glass);border:1px solid var(--glass-b);border-radius:20px;font-size:.78rem;font-weight:500;color:var(--dim);cursor:pointer;transition:all .2s;user-select:none}
+.branch-badge:hover{background:var(--card-h);color:var(--text)}
+.branch-badge .branch-name{color:var(--blue);font-weight:700}
+.branch-badge .copied{color:var(--teal);display:none}
+
+.pg{padding:24px 28px 48px}
+.sec{display:none;animation:fu .3s ease}.sec.act{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.st-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:24px}
+.st-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px 20px;transition:all .2s;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.st-card:hover{background:var(--card-h);transform:translateY(-1px)}
+.st-icon{width:40px;height:40px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:1.15rem;margin-bottom:12px}
+.st-icon.bl{background:var(--blue-g);color:var(--blue)}.st-icon.tl{background:var(--teal-g);color:var(--teal)}.st-icon.am{background:var(--amber-g);color:var(--amber)}.st-icon.rd{background:var(--red-g);color:var(--red)}.st-icon.pr{background:var(--purple-g);color:var(--purple)}
+.st-val{font-family:var(--font-d);font-size:1.7rem;font-weight:700;line-height:1;margin-bottom:3px}
+.st-lbl{font-size:.78rem;color:var(--dim);font-weight:400}
+
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:20px;box-shadow:var(--shadow)}
+.tbl-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
+.tbl-hd h3{font-family:var(--font-d);font-size:.95rem;font-weight:600;display:flex;align-items:center;gap:8px}
+.tbl-hd h3 i{font-size:1rem}
+.tbl-acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.srch{display:flex;align-items:center;gap:7px;padding:6px 12px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rs);color:var(--dim);font-size:.82rem;transition:border-color .2s}
+.srch:focus-within{border-color:var(--blue)}
+.srch input{background:none;border:none;outline:none;color:var(--text);font-family:var(--font-b);font-size:.82rem;width:140px}
+.srch input::placeholder{color:var(--faint)}
+.sel{padding:6px 10px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rs);color:var(--dim);font-size:.8rem;cursor:pointer;outline:none;font-family:var(--font-b)}
+.sel option{background:var(--card-solid)}
+.tbl-sc{overflow-x:auto}
+.tbl-sc table{width:100%;border-collapse:collapse;min-width:640px}
+thead th{text-align:right;padding:11px 20px;font-size:.72rem;font-weight:700;color:var(--faint);border-bottom:1px solid var(--border);white-space:nowrap;background:#F9FBFE}
+tbody td{padding:12px 20px;font-size:.86rem;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr{transition:background .12s}tbody tr:hover{background:var(--card-h)}tbody tr:last-child td{border-bottom:none}
+.u-cell{display:flex;align-items:center;gap:10px}
+.u-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:600;color:#fff;flex-shrink:0}
+.u-nm{font-weight:500;font-size:.86rem}.u-sub{font-size:.72rem;color:var(--dim)}
+
+.bg{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:.7rem;font-weight:600;white-space:nowrap}
+.bg-ok{background:var(--teal-g);color:var(--teal)}.bg-pn{background:var(--amber-g);color:var(--amber)}.bg-no{background:var(--red-g);color:var(--red)}.bg-bl{background:var(--blue-g);color:var(--blue)}.bg-pr{background:var(--purple-g);color:var(--purple)}
+
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;font-family:var(--font-b);font-size:.8rem;font-weight:500;border:none;border-radius:var(--rs);cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-p{background:var(--blue);color:#fff}.btn-p:hover{background:#5E9BFF;transform:translateY(-1px)}
+.btn-g{background:var(--glass);border:1px solid var(--glass-b);color:var(--dim)}.btn-g:hover{background:var(--card-h);color:var(--text)}
+.btn-d{background:var(--red-g);color:var(--red)}.btn-d:hover{background:rgba(232,85,90,.2)}
+.btn-t{background:var(--teal-g);color:var(--teal)}.btn-t:hover{background:rgba(30,201,143,.2)}
+.btn-s{padding:4px 9px;font-size:.73rem}
+.ra{display:flex;gap:5px}
+.ra button{width:28px;height:28px;border:1px solid var(--border);border-radius:6px;background:var(--glass);color:var(--dim);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.88rem;transition:all .2s}
+.ra button:hover{background:var(--card-h);color:var(--text)}
+.ra button.dng:hover{background:var(--red-g);color:var(--red)}
+
+.sett-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:18px}
+.sett-card h3{font-family:var(--font-d);font-size:.95rem;font-weight:600;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.sett-card h3 i{color:var(--blue);font-size:1.1rem}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg{margin-bottom:16px}
+.fg label{display:block;font-size:.77rem;font-weight:500;color:var(--dim);margin-bottom:5px}
+.fg input,.fg select,.fg textarea{width:100%;padding:9px 13px;background:var(--glass);border:1px solid var(--glass-b);border-radius:var(--rs);color:var(--text);font-family:var(--font-b);font-size:.85rem;outline:none;transition:border-color .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue)}
+.fg textarea{resize:vertical;min-height:70px}
+
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;z-index:500;padding:16px}
+.mo.sh{display:flex}
+.mo-box{background:var(--card-solid);border:1px solid var(--border);border-radius:var(--rl);width:100%;max-width:540px;max-height:88vh;overflow-y:auto;animation:mi .25s ease}
+@keyframes mi{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.mo-hd{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)}
+.mo-hd h3{font-family:var(--font-d);font-size:1rem;font-weight:600}
+.mo-x{width:30px;height:30px;border-radius:7px;border:none;background:var(--glass);color:var(--dim);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .2s}
+.mo-x:hover{background:var(--red-g);color:var(--red)}
+.mo-bd{padding:22px}
+.mo-ft{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:14px 22px;border-top:1px solid var(--border)}
+
+.panel{position:fixed;top:0;left:-480px;width:460px;max-width:100vw;height:100vh;background:var(--card-solid);border-right:1px solid var(--border);z-index:400;transition:left .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:var(--shadow)}
+.panel.sh{left:0}
+.panel-hd{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);flex-shrink:0}
+.panel-hd h3{font-family:var(--font-d);font-size:1rem;font-weight:600}
+.panel-bd{flex:1;overflow-y:auto;padding:22px}
+.panel-ft{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0}
+.panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:399;display:none}
+.panel-overlay.sh{display:block}
+
+.notif-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;margin:0 -22px;padding-left:22px;padding-right:22px}
+.notif-item:hover{background:var(--card-h)}
+.notif-item.unread{border-right:2px solid var(--blue);padding-right:20px}
+
+.empty{text-align:center;padding:50px 20px;color:var(--dim)}
+.empty i{font-size:2.5rem;margin-bottom:14px;color:var(--faint);display:block}
+.empty h4{font-family:var(--font-d);margin-bottom:5px;color:var(--text);font-weight:600;font-size:.95rem}
+.empty p{font-size:.82rem;margin-bottom:16px}
+
+.toast{position:fixed;bottom:28px;left:28px;padding:12px 20px;background:var(--card-solid);border:1px solid var(--border);border-radius:16px;color:var(--text);font-size:.85rem;font-weight:500;box-shadow:var(--shadow);transform:translateY(80px);opacity:0;transition:all .3s ease;z-index:9999;display:flex;align-items:center;gap:8px;max-width:360px}
+.toast.sh{transform:translateY(0);opacity:1}
+.toast.ok i{color:var(--teal)}.toast.err i{color:var(--red)}
+
+code,.ltr-code{direction:ltr;display:inline-block}
+.ltr-input{direction:ltr;text-align:left}
+
+@media(max-width:900px){
+  .sb{transform:translateX(100%)}
+  .sb.op{transform:translateX(0)}
+  .mn{margin-right:0}
+  .ham{display:flex}
+  .pg{padding:18px 14px 40px}
+  .fr{grid-template-columns:1fr}
+  .panel{width:100%}
+}
+@media(max-width:600px){
+  .st-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .branch-badge span:not(.branch-name):not(.copied){display:none}
+  .branch-badge{padding:5px 10px}
+}
+</style>
+</head>
+<body>
+
+<aside class="sb" id="sb">
+  <div class="sb-brand">
+    <div class="sb-logo"><i class="ri-heart-pulse-line"></i></div>
+    <div>
+      <h1>Clinify</h1>
+      <small>لوحة إدارة العيادة</small>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-label">نظرة عامة</div>
+    <div class="sb-item act" data-pg="dashboard"><i class="ri-dashboard-3-line"></i>الرئيسية</div>
+
+    <div class="sb-label">الإدارة</div>
+    <div class="sb-item" data-pg="accounting">
+      <i class="ri-exchange-dollar-line"></i>الحسابات
+    </div>
+    <div class="sb-item" data-pg="branches"><i class="ri-git-branch-line"></i>الفروع</div>
+    <div class="sb-item" data-pg="doctors"><i class="ri-stethoscope-line"></i>الأطباء</div>
+    <div class="sb-item" data-pg="patients"><i class="ri-user-heart-line"></i>المرضى<span class="sb-badge" id="pendBdg" style="display:none">0</span></div>
+    <div class="sb-item" data-pg="specialties"><i class="ri-heart-add-line"></i>التخصصات</div>
+    <div class="sb-item" data-pg="appointments"><i class="ri-calendar-check-line"></i>المواعيد</div>
+    <div class="sb-item" data-pg="announcements"><i class="ri-megaphone-line"></i>الإعلانات</div>
+
+    <div class="sb-label">الحساب</div>
+    <div class="sb-item" data-pg="subscription"><i class="ri-vip-crown-line"></i>الاشتراك</div>
+    <div class="sb-item" data-pg="audit"><i class="ri-shield-check-line"></i>سجل العمليات</div>
+    <div class="sb-item" data-pg="settings"><i class="ri-settings-3-line"></i>الإعدادات</div>
+  </nav>
+
+  <div class="sb-foot">
+    <div class="sb-user">
+      <div class="sb-av" id="sbAv">CM</div>
+      <div class="sb-info">
+        <div class="n" id="sbName">المدير</div>
+        <div class="r">مدير العيادة</div>
+      </div>
+      <i class="ri-logout-box-r-line" style="color:var(--faint);font-size:1.05rem;cursor:pointer" onclick="logout()" title="تسجيل الخروج"></i>
+    </div>
+  </div>
+</aside>
+
+<div class="mn">
+  <header class="hd">
+    <div class="hd-l">
+      <button class="ham" onclick="document.getElementById('sb').classList.toggle('op')"><i class="ri-menu-line"></i></button>
+      <h2 class="hd-title" id="hdTitle">الرئيسية</h2>
+    </div>
+
+    <div class="hd-r">
+      <div class="branch-badge" onclick="copyCurrentBranchCode()" title="اضغط لنسخ كود الفرع">
+        <i class="ri-git-branch-line"></i>
+        <span>الفرع الحالي:</span>
+        <span class="branch-name" id="hdBranchName">الفرع الرئيسي</span>
+        <i class="ri-file-copy-line" style="font-size:.82rem"></i>
+        <span class="copied" id="branchCopied">تم النسخ</span>
+      </div>
+
+      <button class="hd-btn" onclick="toggleNotifPanel()" title="الإشعارات" id="notifBtn">
+        <i class="ri-notification-3-line"></i>
+        <span class="dot" id="notifDot" style="display:none"></span>
+      </button>
+
+      <button class="hd-btn" onclick="navigateTo('settings')" title="الإعدادات">
+        <i class="ri-settings-3-line"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="pg">
+
+    <!-- DASHBOARD -->
+    <section class="sec act" id="pg-dashboard">
+      <div class="st-grid">
+        <div class="st-card"><div class="st-icon bl"><i class="ri-git-branch-line"></i></div><div class="st-val" id="sBranches">—</div><div class="st-lbl">إجمالي الفروع</div></div>
+        <div class="st-card"><div class="st-icon bl"><i class="ri-stethoscope-line"></i></div><div class="st-val" id="sDocs">—</div><div class="st-lbl">إجمالي الأطباء</div></div>
+        <div class="st-card"><div class="st-icon tl"><i class="ri-user-heart-line"></i></div><div class="st-val" id="sPats">—</div><div class="st-lbl">إجمالي المرضى</div></div>
+        <div class="st-card"><div class="st-icon am"><i class="ri-calendar-check-line"></i></div><div class="st-val" id="sAppts">—</div><div class="st-lbl">إجمالي المواعيد</div></div>
+        <div class="st-card"><div class="st-icon rd"><i class="ri-timer-flash-line"></i></div><div class="st-val" id="sPend">—</div><div class="st-lbl">قيد الانتظار</div></div>
+        <div class="st-card"><div class="st-icon tl"><i class="ri-check-double-line"></i></div><div class="st-val" id="sComp">—</div><div class="st-lbl">مكتمل</div></div>
+      </div>
+
+      <div class="tbl-wrap">
+        <div class="tbl-hd">
+          <h3><i class="ri-calendar-line" style="color:var(--amber)"></i>أحدث المواعيد</h3>
+          <div class="tbl-acts">
+            <button class="btn btn-g btn-s" onclick="navigateTo('appointments')">عرض الكل <i class="ri-arrow-left-s-line"></i></button>
+          </div>
+        </div>
+        <div class="tbl-sc">
+          <table>
+            <thead>
+              <tr>
+                <th>رقم الحجز</th>
+                <th>المريض</th>
+                <th>الطبيب</th>
+                <th>التاريخ</th>
+                <th>الوقت</th>
+                <th>الحالة</th>
+              </tr>
+            </thead>
+            <tbody id="recentTb"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- BRANCHES -->
+    <section class="sec" id="pg-branches">
+      <div class="tbl-wrap">
+        <div class="tbl-hd">
+          <h3><i class="ri-git-branch-line" style="color:var(--blue)"></i>الفروع</h3>
+          <div class="tbl-acts">
+            <div class="srch">
+              <i class="ri-search-line"></i>
+              <input placeholder="ابحث عن فرع..." id="branchSrch">
+            </div>
+            <button class="btn btn-p" onclick="openModal('branch')"><i class="ri-add-line"></i>إضافة فرع</button>
+          </div>
+        </div>
+
+        <div class="tbl-sc">
+          <table>
+            <thead>
+              <tr>
+                <th>اسم الفرع</th>
+                <th>المدينة</th>
+                <th>المنطقة</th>
+                <th>الهاتف</th>
+                <th>الحالة</th>
+                <th>افتراضي</th>
+                <th style="width:140px">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="branchTb"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOCTORS -->
+    <section class="sec" id="pg-doctors">
+      <div class="tbl-wrap">
+        <div class="tbl-hd">
+          <h3><i class="ri-stethoscope-line" style="color:var(--blue)"></i>الأطباء</h3>
+          <div class="tbl-acts">
+            <div class="srch">
+              <i class="ri-search-line"></i>
+              <input placeholder="بحث..." id="docSrch">
+            </div>
+            <button class="btn btn-p" onclick="openModal('doctor')"><i class="ri-add-line"></i>إضافة طبيب</button>
+          </div>
+        </div>
+
+        <div class="tbl-sc">
+          <table>
+            <thead>
+              <tr>
+                <th>الطبيب</th>
+                <th>التخصص</th>
+                <th>رقم الترخيص</th>
+                <th>التقييم</th>
+                <th>الحالة</th>
+                <th style="width:120px">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="docTb"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PATIENTS -->
+    <section class="sec" id="pg-patients">
+      <div class="tbl-wrap">
+        <div class="tbl-hd">
+          <h3><i class="ri-user-heart-line" style="color:var(--teal)"></i>المرضى</h3>
+          <div class="tbl-acts">
+            <div class="srch">
+              <i class="ri-search-line"></i>
+              <input placeholder="بحث..." id="patSrch">
+            </div>
+            <select class="sel" id="patFilt">
+              <option value="all">كل الحالات</option>
+              <option value="active">نشط</option>
+              <option value="pending">قيد الانتظار</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="tbl-sc">
+          <table>
+            <thead>
+              <tr>
+                <th>المريض</th>
+                <th>الهاتف</th>
+                <th>فصيلة الدم</th>
+                <th>تاريخ الانضمام</th>
+                <th>الحالة</th>
+                <th style="width:120px">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="patTb"></tbody>
+          </table>
+          <div id="patPagination" style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-top:1px solid var(--border);gap:12px;flex-wrap:wrap">
+            <div id="patPageInfo" style="font-size:.82rem;color:var(--dim)">—</div>
+          
+            <div style="display:flex;align-items:center;gap:8px">
+              <button class="btn btn-g btn-s" id="patPrevBtn">
+                <i class="ri-arrow-right-s-line"></i>السابق
+              </button>
+          
+              <span id="patPageNumber" style="font-size:.82rem;color:var(--text);font-weight:600">1</span>
+          
+              <button class="btn btn-g btn-s" id="patNextBtn">
+                التالي<i class="ri-arrow-left-s-line"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SPECIALTIES -->
+    <section class="sec" id="pg-specialties">
+      <div class="tbl-wrap">
+        <div class="tbl-hd">
+          <h3><i class="ri-heart-add-line" style="color:var(--amber)"></i>التخصصات</h3>
+          <div class="tbl-acts">
+            <button class="btn btn-p" onclick="openModal('addSpec')"><i class="ri-add-line"></i>إضافة تخصص</button>
+          </div>
+        </div>
+
+        <div class="tbl-sc">
+          <table>
+            <thead>
+              <tr>
+                <th>اسم التخصص</th>
+                <th>عدد الأطباء</th>
+                <th style="width:100px">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="specTb"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- APPOINTMENTS -->
+    <section class="sec" id="pg-appointments">
+      <div class="tbl-wrap">
+        <div class="tbl-hd">
+          <h3><i class="ri-calendar-check-line" style="color:var(--amber)"></i>كل المواعيد</h3>
+          <div class="tbl-acts">
+            <div class="srch">
+              <i class="ri-search-line"></i>
+              <input id="apptSearch" placeholder="بحث برقم الحجز أو اسم المريض أو الهاتف...">
+            </div>
+          
+            <select class="sel" id="apptFilt">
+              <option value="">كل الحالات</option>
+              <option value="PENDING">قيد الانتظار</option>
+              <option value="CONFIRMED">مؤكد</option>
+              <option value="COMPLETED">مكتمل</option>
+              <option value="CANCELLED">ملغي</option>
+              <option value="NO_SHOW">لم يحضر</option>
+            </select>
+          
+            <input type="date" class="sel" id="apptDate" style="color:var(--dim)">
+          </div>
+        </div>
+
+        <div class="tbl-sc">
+          <table>
+            <thead>
+              <tr>
+                <th>رقم الحجز</th>
+                <th>المريض</th>
+                <th>الطبيب</th>
+                <th>التاريخ</th>
+                <th>الوقت</th>
+                <th>الحالة</th>
+                <th>ملاحظات</th>
+                <th style="width:100px">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="apptTb"></tbody>
+          </table>
+          <div id="apptPagination" style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-top:1px solid var(--border);gap:12px;flex-wrap:wrap">
+            <div id="apptPageInfo" style="font-size:.82rem;color:var(--dim)">—</div>
+          
+            <div style="display:flex;align-items:center;gap:8px">
+              <button class="btn btn-g btn-s" id="apptPrevBtn">
+                <i class="ri-arrow-right-s-line"></i>السابق
+              </button>
+          
+              <span id="apptPageNumber" style="font-size:.82rem;color:var(--text);font-weight:600">1</span>
+          
+              <button class="btn btn-g btn-s" id="apptNextBtn">
+                التالي<i class="ri-arrow-left-s-line"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ANNOUNCEMENTS -->
+    <section class="sec" id="pg-announcements">
+      <div class="tbl-wrap">
+        <div class="tbl-hd">
+          <h3><i class="ri-megaphone-line" style="color:var(--purple)"></i>الإعلانات</h3>
+          <div class="tbl-acts">
+            <button class="btn btn-p" onclick="openModal('addAnno')"><i class="ri-add-line"></i>إعلان جديد</button>
+          </div>
+        </div>
+        <div id="annoList" style="padding:18px 20px"></div>
+      </div>
+    </section>
+
+    <!-- SUBSCRIPTION -->
+    <section class="sec" id="pg-subscription">
+      <div class="sett-card">
+        <h3><i class="ri-vip-crown-line"></i>تفاصيل الاشتراك</h3>
+        <div class="fr">
+          <div class="fg"><label>اسم الخطة</label><input id="plNm" readonly></div>
+          <div class="fg"><label>الحالة</label><input id="plSt" readonly></div>
+          <div class="fg"><label>الحد الأقصى للأطباء</label><input id="plMD" readonly></div>
+          <div class="fg"><label>الحد الأقصى للمرضى</label><input id="plMP" readonly></div>
+          <div class="fg"><label>تاريخ البداية</label><input id="plS" readonly></div>
+          <div class="fg"><label>تاريخ الانتهاء</label><input id="plE" readonly></div>
+        </div>
+      </div>
+
+      <div class="tbl-wrap">
+        <div class="tbl-hd"><h3>الفواتير</h3></div>
+        <div class="tbl-sc">
+          <table>
+            <thead>
+              <tr>
+                <th>التاريخ</th>
+                <th>المبلغ</th>
+                <th>الحالة</th>
+                <th>الفاتورة</th>
+              </tr>
+            </thead>
+            <tbody id="invTb"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <section class="sec" id="pg-accounting">
+      <!-- Top stats -->
+      <div class="st-grid">
+        <div class="st-card">
+          <div class="st-icon tl"><i class="ri-wallet-3-line"></i></div>
+          <div class="st-val ltr-code" id="accTodayIn">—</div>
+          <div class="st-lbl">تحصيل اليوم</div>
+        </div>
+    
+        <div class="st-card">
+          <div class="st-icon rd"><i class="ri-arrow-left-down-line"></i></div>
+          <div class="st-val ltr-code" id="accTodayOut">—</div>
+          <div class="st-lbl">مصروفات اليوم</div>
+        </div>
+    
+        <div class="st-card">
+          <div class="st-icon bl"><i class="ri-line-chart-line"></i></div>
+          <div class="st-val ltr-code" id="accTodayNet">—</div>
+          <div class="st-lbl">صافي اليوم</div>
+        </div>
+    
+        <div class="st-card">
+          <div class="st-icon am"><i class="ri-calendar-2-line"></i></div>
+          <div class="st-val ltr-code" id="accMonthIn">—</div>
+          <div class="st-lbl">تحصيل الشهر</div>
+        </div>
+    
+        <div class="st-card">
+          <div class="st-icon pr"><i class="ri-coins-line"></i></div>
+          <div class="st-val ltr-code" id="accOutstanding">—</div>
+          <div class="st-lbl">مبالغ مستحقة</div>
+        </div>
+    
+        <div class="st-card">
+          <div class="st-icon bl"><i class="ri-file-list-3-line"></i></div>
+          <div class="st-val" id="accPendingCount">—</div>
+          <div class="st-lbl">حجوزات غير مدفوعة</div>
+        </div>
+      </div>
+    
+      <!-- Toolbar -->
+      <div class="tbl-wrap">
+        <div class="tbl-hd">
+          <h3><i class="ri-exchange-dollar-line" style="color:var(--teal)"></i>التحصيل والحركة المالية</h3>
+    
+          <div class="tbl-acts">
+            <div class="srch">
+              <i class="ri-search-line"></i>
+              <input id="accSearch" placeholder="بحث باسم المريض أو المرجع أو الملاحظة...">
+            </div>
+    
+            <select class="sel" id="accFlowFilter">
+              <option value="">كل الحركات</option>
+              <option value="INFLOW">إيراد</option>
+              <option value="OUTFLOW">مصروف</option>
+            </select>
+    
+            <select class="sel" id="accTypeFilter">
+              <option value="">كل الأنواع</option>
+              <option value="PATIENT_PAYMENT">دفعة مريض</option>
+              <option value="PAYMENT_ADJUSTMENT">تعديل</option>
+              <option value="REFUND">استرجاع</option>
+              <option value="WAIVER">إعفاء</option>
+              <option value="RENT">إيجار</option>
+              <option value="SALARY">رواتب</option>
+              <option value="UTILITIES">مرافق</option>
+              <option value="SUPPLIES">مستلزمات</option>
+              <option value="MAINTENANCE">صيانة</option>
+              <option value="MARKETING">تسويق</option>
+              <option value="TAX">ضرائب</option>
+              <option value="OTHER_EXPENSE">مصروف آخر</option>
+              <option value="OTHER_INCOME">دخل آخر</option>
+            </select>
+    
+            <input type="date" class="sel" id="accDateFrom" style="color:var(--dim)">
+            <input type="date" class="sel" id="accDateTo" style="color:var(--dim)">
+    
+            <button class="btn btn-g" id="accApplyFiltersBtn">
+              <i class="ri-filter-3-line"></i>تطبيق
+            </button>
+    
+            <button class="btn btn-p" onclick="openModal('cashEntry')">
+              <i class="ri-add-line"></i>إضافة حركة
+            </button>
+          </div>
+        </div>
+    
+        <div class="tbl-sc">
+          <table>
+            <thead>
+              <tr>
+                <th>التاريخ</th>
+                <th>النوع</th>
+                <th>التدفق</th>
+                <th>الطريقة</th>
+                <th>المبلغ</th>
+                <th>المرجع</th>
+                <th>الربط</th>
+                <th>ملاحظة</th>
+                <th style="width:90px">عرض</th>
+              </tr>
+            </thead>
+            <tbody id="accLedgerTb"></tbody>
+          </table>
+        </div>
+      </div>
+    
+      <!-- Appointment collections -->
+      <div class="tbl-wrap">
+        <div class="tbl-hd">
+          <h3><i class="ri-calendar-check-line" style="color:var(--amber)"></i>تحصيلات المواعيد</h3>
+    
+          <div class="tbl-acts">
+            <div class="srch">
+              <i class="ri-search-line"></i>
+              <input id="accApptSearch" placeholder="بحث بالمريض أو الطبيب...">
+            </div>
+    
+            <select class="sel" id="accPayStatusFilter">
+              <option value="">كل حالات الدفع</option>
+              <option value="UNPAID">غير مدفوع</option>
+              <option value="PARTIAL">مدفوع جزئيًا</option>
+              <option value="PAID">مدفوع</option>
+              <option value="WAIVED">معفى</option>
+            </select>
+    
+            <button class="btn btn-g" id="accRefreshApptsBtn">
+              <i class="ri-refresh-line"></i>تحديث
+            </button>
+          </div>
+        </div>
+    
+        <div class="tbl-sc">
+          <table>
+            <thead>
+              <tr>
+                <th>رقم الحجز</th>
+                <th>المريض</th>
+                <th>الطبيب</th>
+                <th>التاريخ</th>
+                <th>الحالة</th>
+                <th>الرسوم</th>
+                <th>المدفوع</th>
+                <th>المتبقي</th>
+                <th>الدفع</th>
+                <th style="width:120px">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="accApptTb"></tbody>
+            
+          </table>
+          <div id="accApptPagination" style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-top:1px solid var(--border);gap:12px;flex-wrap:wrap">
+            <div id="accApptPageInfo" style="font-size:.82rem;color:var(--dim)">—</div>
+          
+            <div style="display:flex;align-items:center;gap:8px">
+              <button class="btn btn-g btn-s" id="accApptPrevBtn">
+                <i class="ri-arrow-right-s-line"></i>السابق
+              </button>
+          
+              <span id="accApptPageNumber" style="font-size:.82rem;color:var(--text);font-weight:600">1</span>
+          
+              <button class="btn btn-g btn-s" id="accApptNextBtn">
+                التالي<i class="ri-arrow-left-s-line"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Add general ledger entry modal -->
+    <div class="mo" id="mo-cashEntry">
+      <div class="mo-box">
+        <div class="mo-hd">
+          <h3>إضافة حركة مالية</h3>
+          <button class="mo-x" onclick="closeModal('cashEntry')"><i class="ri-close-line"></i></button>
+        </div>
+    
+        <div class="mo-bd">
+          <div class="fr">
+            <div class="fg">
+              <label>نوع الحركة *</label>
+              <select id="cashEntryType">
+                <option value="">— اختر —</option>
+                <option value="PATIENT_PAYMENT">دفعة مريض</option>
+                <option value="PAYMENT_ADJUSTMENT">تعديل</option>
+                <option value="REFUND">استرجاع</option>
+                <option value="WAIVER">إعفاء</option>
+                <option value="RENT">إيجار</option>
+                <option value="SALARY">رواتب</option>
+                <option value="UTILITIES">مرافق</option>
+                <option value="SUPPLIES">مستلزمات</option>
+                <option value="MAINTENANCE">صيانة</option>
+                <option value="MARKETING">تسويق</option>
+                <option value="TAX">ضرائب</option>
+                <option value="OTHER_EXPENSE">مصروف آخر</option>
+                <option value="OTHER_INCOME">دخل آخر</option>
+              </select>
+            </div>
+    
+            <div class="fg">
+              <label>التدفق *</label>
+              <select id="cashEntryFlow">
+                <option value="">— اختر —</option>
+                <option value="INFLOW">إيراد</option>
+                <option value="OUTFLOW">مصروف</option>
+              </select>
+            </div>
+          </div>
+    
+          <div class="fr">
+            <div class="fg">
+              <label>المبلغ *</label>
+              <input id="cashEntryAmount" type="number" step="0.01" min="0" class="ltr-input" placeholder="0.00">
+            </div>
+    
+            <div class="fg">
+              <label>طريقة الدفع</label>
+              <select id="cashEntryMethod">
+                <option value="">— غير محدد —</option>
+                <option value="CASH">كاش</option>
+                <option value="CARD">بطاقة</option>
+                <option value="INSTAPAY">InstaPay</option>
+                <option value="VODAFONE_CASH">Vodafone Cash</option>
+                <option value="BANK_TRANSFER">تحويل بنكي</option>
+                <option value="OTHER">أخرى</option>
+              </select>
+            </div>
+          </div>
+    
+          <div class="fr">
+            <div class="fg">
+              <label>التاريخ الفعلي</label>
+              <input id="cashEntryDate" type="date" style="color:var(--dim)">
+            </div>
+    
+            <div class="fg">
+              <label>مرجع / رقم عملية</label>
+              <input id="cashEntryRef" class="ltr-input" placeholder="REF-12345">
+            </div>
+          </div>
+    
+          <div class="fg">
+            <label>ملاحظة</label>
+            <textarea id="cashEntryNote" placeholder="اكتب ملاحظة توضيحية..."></textarea>
+          </div>
+        </div>
+    
+        <div class="mo-ft">
+          <button class="btn btn-g" onclick="closeModal('cashEntry')">إلغاء</button>
+          <button class="btn btn-p" id="cashEntrySubmitBtn">
+            <i class="ri-save-line"></i>حفظ الحركة
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Appointment payment modal -->
+    <div class="mo" id="mo-apptFinance">
+      <div class="mo-box">
+        <div class="mo-hd">
+          <h3>إدارة دفع الموعد</h3>
+          <button class="mo-x" onclick="closeModal('apptFinance')"><i class="ri-close-line"></i></button>
+        </div>
+    
+        <div class="mo-bd">
+          <input type="hidden" id="apptFinanceId">
+    
+          <div class="sett-card" style="margin-bottom:16px;padding:18px">
+            <div class="fr">
+              <div class="fg">
+                <label>الرسوم</label>
+                <input id="apptFeeAmount" type="number" step="0.01" min="0" class="ltr-input" placeholder="0.00">
+              </div>
+              <div class="fg">
+                <label>الخصم</label>
+                <input id="apptDiscountAmount" type="number" step="0.01" min="0" class="ltr-input" placeholder="0.00">
+              </div>
+              <div class="fg">
+                <label>إجمالي المستحق</label>
+                <input id="apptTotalDue" class="ltr-input" readonly>
+              </div>
+              <div class="fg">
+                <label>إجمالي المدفوع</label>
+                <input id="apptTotalPaid" class="ltr-input" readonly>
+              </div>
+              <div class="fg">
+                <label>المتبقي</label>
+                <input id="apptBalance" class="ltr-input" readonly>
+              </div>
+              <div class="fg">
+                <label>حالة الدفع</label>
+                <input id="apptPayStatus" readonly>
+              </div>
+            </div>
+    
+            <div class="fg">
+              <label>ملاحظة عامة</label>
+              <textarea id="apptFinanceNote" placeholder="ملاحظة على الحالة المالية للموعد..."></textarea>
+            </div>
+    
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px">
+              <button class="btn btn-g" id="apptFinanceSaveSummaryBtn">
+                <i class="ri-save-line"></i>حفظ الرسوم
+              </button>
+            </div>
+          </div>
+    
+          <div class="sett-card" style="margin-bottom:16px;padding:18px">
+            <h3 style="margin-bottom:14px"><i class="ri-add-circle-line"></i>إضافة حركة للموعد</h3>
+    
+            <div class="fr">
+              <div class="fg">
+                <label>نوع الحركة *</label>
+                <select id="apptEntryType">
+                  <option value="">— اختر —</option>
+                  <option value="PATIENT_PAYMENT">دفعة مريض</option>
+                  <option value="PAYMENT_ADJUSTMENT">تعديل</option>
+                  <option value="REFUND">استرجاع</option>
+                  <option value="WAIVER">إعفاء</option>
+                </select>
+              </div>
+    
+              <div class="fg">
+                <label>التدفق *</label>
+                <select id="apptEntryFlow">
+                  <option value="">— اختر —</option>
+                  <option value="INFLOW">إيراد</option>
+                  <option value="OUTFLOW">خارج</option>
+                </select>
+              </div>
+            </div>
+    
+            <div class="fr">
+              <div class="fg">
+                <label>المبلغ *</label>
+                <input id="apptEntryAmount" type="number" step="0.01" min="0" class="ltr-input" placeholder="0.00">
+              </div>
+    
+              <div class="fg">
+                <label>طريقة الدفع</label>
+                <select id="apptEntryMethod">
+                  <option value="">— غير محدد —</option>
+                  <option value="CASH">كاش</option>
+                  <option value="CARD">بطاقة</option>
+                  <option value="INSTAPAY">InstaPay</option>
+                  <option value="VODAFONE_CASH">Vodafone Cash</option>
+                  <option value="BANK_TRANSFER">تحويل بنكي</option>
+                  <option value="OTHER">أخرى</option>
+                </select>
+              </div>
+            </div>
+    
+            <div class="fr">
+              <div class="fg">
+                <label>التاريخ الفعلي</label>
+                <input id="apptEntryDate" type="date" style="color:var(--dim)">
+              </div>
+              <div class="fg">
+                <label>مرجع / رقم عملية</label>
+                <input id="apptEntryRef" class="ltr-input" placeholder="TX-001">
+              </div>
+            </div>
+    
+            <div class="fg">
+              <label>ملاحظة</label>
+              <textarea id="apptEntryNote" placeholder="سبب التعديل أو وصف الحركة..."></textarea>
+            </div>
+    
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px">
+              <button class="btn btn-p" id="apptFinanceAddEntryBtn">
+                <i class="ri-add-line"></i>إضافة الحركة
+              </button>
+            </div>
+          </div>
+    
+          <div class="tbl-wrap" style="margin-bottom:0">
+            <div class="tbl-hd">
+              <h3><i class="ri-history-line" style="color:var(--purple)"></i>سجل الحركات</h3>
+            </div>
+            <div class="tbl-sc">
+              <table>
+                <thead>
+                  <tr>
+                    <th>التاريخ</th>
+                    <th>النوع</th>
+                    <th>التدفق</th>
+                    <th>الطريقة</th>
+                    <th>المبلغ</th>
+                    <th>المرجع</th>
+                    <th>الملاحظة</th>
+                  </tr>
+                </thead>
+                <tbody id="apptFinanceEntriesTb"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    
+        <div class="mo-ft">
+          <button class="btn btn-g" onclick="closeModal('apptFinance')">إغلاق</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUDIT -->
+    <section class="sec" id="pg-audit">
+      <div class="tbl-wrap">
+        <div class="tbl-hd">
+          <h3><i class="ri-shield-check-line" style="color:var(--blue)"></i>سجل العمليات</h3>
+          <div class="tbl-acts">
+            <div class="srch">
+              <i class="ri-filter-3-line"></i>
+              <input placeholder="تصفية الإجراء..." id="auditQ">
+            </div>
+          </div>
+        </div>
+        <div id="auditList" style="padding:18px 20px"></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="sec" id="pg-settings">
+
+      <div class="sett-card">
+        <h3><i class="ri-building-4-line"></i>بيانات الكيان</h3>
+        <div class="fr">
+          <div class="fg"><label>اسم الكيان *</label><input id="groupName"></div>
+          <div class="fg"><label>الهاتف الرئيسي</label><input id="groupPhone" class="ltr-input"></div>
+          <div class="fg"><label>الموقع الإلكتروني</label><input id="groupWebsite" class="ltr-input" placeholder="https://"></div>
+          <div class="fg"><label>رابط الشعار</label><input id="groupLogo" class="ltr-input" placeholder="https://..."></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:6px">
+          <button class="btn btn-p" onclick="saveGroupSettings()"><i class="ri-save-line"></i>حفظ بيانات الكيان</button>
+        </div>
+      </div>
+
+      <div class="sett-card">
+        <h3><i class="ri-git-branch-line"></i>بيانات الفرع الحالي</h3>
+        <div class="fr">
+          <div class="fg"><label>اسم الفرع *</label><input id="branchName"></div>
+          <div class="fg"><label>هاتف الفرع</label><input id="branchPhone" class="ltr-input"></div>
+          <div class="fg"><label>المدينة</label><input id="branchCity"></div>
+          <div class="fg"><label>المنطقة</label><input id="branchArea"></div>
+        </div>
+        <div class="fg"><label>العنوان</label><input id="branchAddress"></div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:6px">
+          <button class="btn btn-p" onclick="saveBranchSettings()"><i class="ri-save-line"></i>حفظ بيانات الفرع</button>
+        </div>
+      </div>
+
+      <div class="sett-card">
+        <h3><i class="ri-links-line"></i>وسائل الانضمام للفرع</h3>
+        <p style="font-size:.85rem;color:var(--dim);margin-bottom:14px;line-height:1.8">
+          استخدم كود الفرع أو رابط الانضمام لمشاركة هذا الفرع مع الأطباء والمرضى.
+        </p>
+
+        <div class="fr">
+          <div class="fg">
+            <label>كود الفرع</label>
+            <input id="branchJoinCode" readonly class="ltr-input">
+          </div>
+          <div class="fg">
+            <label>الرابط المختصر</label>
+            <input id="branchSlug" readonly class="ltr-input">
+          </div>
+        </div>
+
+        <div class="fg">
+          <label>رابط الانضمام</label>
+          <input id="branchJoinLink" readonly class="ltr-input">
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:6px;flex-wrap:wrap">
+          <button class="btn btn-g" onclick="copyBranchCode()"><i class="ri-file-copy-line"></i>نسخ الكود</button>
+          <button class="btn btn-g" onclick="copyBranchLink()"><i class="ri-links-line"></i>نسخ الرابط</button>
+          <button class="btn btn-g" onclick="downloadBranchQr()"><i class="ri-qr-code-line"></i>تنزيل QR</button>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</div>
+
+<!-- SIDE PANELS -->
+<div class="panel-overlay" id="panelOvl" onclick="closeAllPanels()"></div>
+
+<div class="panel" id="notifPanel">
+  <div class="panel-hd">
+    <h3>الإشعارات</h3>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn btn-g btn-s" onclick="markAllRead()"><i class="ri-check-double-line"></i>تحديد الكل كمقروء</button>
+      <button class="mo-x" onclick="closeAllPanels()"><i class="ri-close-line"></i></button>
+    </div>
+  </div>
+  <div class="panel-bd" id="notifList"></div>
+</div>
+
+<div class="panel" id="detailPanel">
+  <div class="panel-hd">
+    <h3 id="detailTitle">التفاصيل</h3>
+    <button class="mo-x" onclick="closeAllPanels()"><i class="ri-close-line"></i></button>
+  </div>
+  <div class="panel-bd" id="detailBody"></div>
+  <div class="panel-ft" id="detailFt"></div>
+</div>
+
+<!-- MODALS -->
+
+<!-- BRANCH MODAL -->
+<div class="mo" id="mo-branch">
+  <div class="mo-box">
+    <div class="mo-hd">
+      <h3 id="branchMoTitle">إضافة فرع</h3>
+      <button class="mo-x" onclick="closeModal('branch')"><i class="ri-close-line"></i></button>
+    </div>
+    <div class="mo-bd">
+      <input type="hidden" id="branchEditId">
+      <div class="fr">
+        <div class="fg"><label>اسم الفرع *</label><input id="branchMoName" placeholder="الفرع الرئيسي"></div>
+        <div class="fg"><label>هاتف الفرع</label><input id="branchMoPhone" class="ltr-input" placeholder="+20 1x xxxx xxxx"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>المدينة</label><input id="branchMoCity" placeholder="القاهرة"></div>
+        <div class="fg"><label>المنطقة</label><input id="branchMoArea" placeholder="مدينة نصر"></div>
+      </div>
+      <div class="fg"><label>العنوان</label><input id="branchMoAddress" placeholder="عنوان الفرع"></div>
+      <div class="fr">
+        <div class="fg"><label>الرابط المختصر</label><input id="branchMoSlug" class="ltr-input" placeholder="al-shifa-nasr"></div>
+        <div class="fg"><label>كود الفرع</label><input id="branchMoCode" class="ltr-input" placeholder="BR-123456"></div>
+      </div>
+    </div>
+    <div class="mo-ft">
+      <button class="btn btn-g" onclick="closeModal('branch')">إلغاء</button>
+      <button class="btn btn-p" id="branchSubmitBtn"><i class="ri-add-line"></i>حفظ الفرع</button>
+    </div>
+  </div>
+</div>
+
+<!-- DOCTOR MODAL -->
+<div class="mo" id="mo-doctor">
+  <div class="mo-box">
+    <div class="mo-hd">
+      <h3 id="docMoTitle">إضافة طبيب</h3>
+      <button class="mo-x" onclick="closeModal('doctor')"><i class="ri-close-line"></i></button>
+    </div>
+    <div class="mo-bd">
+      <input type="hidden" id="docEditId">
+
+      <div class="fr">
+        <div class="fg"><label>الاسم الكامل *</label><input id="docNm" placeholder="د. أحمد حسن"></div>
+        <div class="fg"><label>البريد الإلكتروني</label><input type="email" id="docEm" class="ltr-input" placeholder="doctor@clinic.com"></div>
+      </div>
+
+      <div class="fr">
+        <div class="fg"><label>الهاتف</label><input id="docPh" class="ltr-input" placeholder="+20 1x xxxx xxxx"></div>
+        <div class="fg"><label>كلمة المرور <span id="docPwReq">*</span></label><input type="password" id="docPw" class="ltr-input" placeholder="8 أحرف على الأقل"></div>
+      </div>
+
+      <div class="fr">
+        <div class="fg">
+          <label>التخصص</label>
+          <select id="docSp">
+            <option value="">— اختر —</option>
+          </select>
+        </div>
+        <div class="fg"><label>رقم الترخيص</label><input id="docLic" class="ltr-input" placeholder="LIC-XXXXX"></div>
+      </div>
+
+      <div class="fr">
+        <div class="fg">
+          <label>النوع</label>
+          <select id="docGn">
+            <option value="">— اختر —</option>
+            <option value="MALE">ذكر</option>
+            <option value="FEMALE">أنثى</option>
+            <option value="OTHER">أخرى</option>
+          </select>
+        </div>
+        <div class="fg"><label>تاريخ الميلاد</label><input type="date" id="docDob" style="color:var(--dim)"></div>
+      </div>
+
+      <div class="fg"><label>نبذة تعريفية</label><textarea id="docBio" placeholder="نبذة مختصرة عن الطبيب..."></textarea></div>
+    </div>
+    <div class="mo-ft">
+      <button class="btn btn-g" onclick="closeModal('doctor')">إلغاء</button>
+      <button class="btn btn-p" id="docSubmitBtn"><i class="ri-add-line"></i>حفظ الطبيب</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD SPECIALTY -->
+<div class="mo" id="mo-addSpec">
+  <div class="mo-box" style="max-width:400px">
+    <div class="mo-hd">
+      <h3>إضافة تخصص</h3>
+      <button class="mo-x" onclick="closeModal('addSpec')"><i class="ri-close-line"></i></button>
+    </div>
+    <div class="mo-bd">
+      <div class="fg"><label>اسم التخصص *</label><input id="specNm" placeholder="مثال: أمراض قلب"></div>
+    </div>
+    <div class="mo-ft">
+      <button class="btn btn-g" onclick="closeModal('addSpec')">إلغاء</button>
+      <button class="btn btn-p" id="specSubmitBtn"><i class="ri-add-line"></i>إضافة</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT SPECIALTY -->
+<div class="mo" id="mo-editSpec">
+  <div class="mo-box" style="max-width:400px">
+    <div class="mo-hd">
+      <h3>تعديل التخصص</h3>
+      <button class="mo-x" onclick="closeModal('editSpec')"><i class="ri-close-line"></i></button>
+    </div>
+    <div class="mo-bd">
+      <input type="hidden" id="editSpecId">
+      <div class="fg"><label>اسم التخصص *</label><input id="editSpecNm"></div>
+    </div>
+    <div class="mo-ft">
+      <button class="btn btn-g" onclick="closeModal('editSpec')">إلغاء</button>
+      <button class="btn btn-p" id="editSpecSubmitBtn"><i class="ri-save-line"></i>حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ANNOUNCEMENT -->
+<div class="mo" id="mo-addAnno">
+  <div class="mo-box">
+    <div class="mo-hd">
+      <h3>إعلان جديد</h3>
+      <button class="mo-x" onclick="closeModal('addAnno')"><i class="ri-close-line"></i></button>
+    </div>
+    <div class="mo-bd">
+      <div class="fg"><label>العنوان *</label><input id="annoTi" placeholder="عنوان الإعلان"></div>
+      <div class="fg"><label>الرسالة *</label><textarea id="annoBd" placeholder="اكتب نص الإعلان..." style="min-height:100px"></textarea></div>
+      <div class="fg">
+        <label>الفئة المستهدفة</label>
+        <select id="annoTg">
+          <option value="">الجميع</option>
+          <option value="doctor">الأطباء فقط</option>
+          <option value="patient">المرضى فقط</option>
+        </select>
+      </div>
+    </div>
+    <div class="mo-ft">
+      <button class="btn btn-g" onclick="closeModal('addAnno')">إلغاء</button>
+      <button class="btn btn-p" id="annoSubmitBtn"><i class="ri-megaphone-line"></i>نشر</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM -->
+<div class="mo" id="mo-confirm">
+  <div class="mo-box" style="max-width:380px">
+    <div class="mo-hd">
+      <h3 id="confirmTitle">تأكيد</h3>
+      <button class="mo-x" onclick="closeModal('confirm')"><i class="ri-close-line"></i></button>
+    </div>
+    <div class="mo-bd">
+      <p id="confirmMsg" style="font-size:.9rem;color:var(--dim);line-height:1.7"></p>
+    </div>
+    <div class="mo-ft">
+      <button class="btn btn-g" onclick="closeModal('confirm')">إلغاء</button>
+      <button class="btn btn-d" id="confirmBtn">تأكيد</button>
+    </div>
+  </div>
+</div>
+
+<!-- APPOINTMENT STATUS -->
+<div class="mo" id="mo-apptStatus">
+  <div class="mo-box" style="max-width:420px">
+    <div class="mo-hd">
+      <h3>تحديث حالة الموعد</h3>
+      <button class="mo-x" onclick="closeModal('apptStatus')"><i class="ri-close-line"></i></button>
+    </div>
+    <div class="mo-bd">
+      <input type="hidden" id="apptStatusId">
+      <div class="fg">
+        <label>الحالة الجديدة</label>
+        <select id="apptNewSt" class="sel" style="width:100%;padding:10px 13px;font-size:.85rem"></select>
+      </div>
+      <div class="fg">
+        <label>ملاحظات (اختياري)</label>
+        <textarea id="apptNotes" placeholder="ملاحظات الكشف أو سبب الإلغاء..."></textarea>
+      </div>
+    </div>
+    <div class="mo-ft">
+      <button class="btn btn-g" onclick="closeModal('apptStatus')">إلغاء</button>
+      <button class="btn btn-p" id="apptStatusSubmitBtn"><i class="ri-check-line"></i>تحديث</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <i class="ri-check-line"></i>
+  <span id="toastTx"></span>
+</div>
+
+<script>
+  const API = '/api/v1';
+  
+  let token = localStorage.getItem('access_token') || '';
+  let managerName = localStorage.getItem('manager_name') || 'المدير';
+
+  let currentBranchId = localStorage.getItem('current_branch_id') || '';
+  let currentBranchName = localStorage.getItem('current_branch_name') || 'الفرع الرئيسي';
+
+  let state = {
+  group: null,
+  currentBranch: null,
+  currentJoinAssets: null,
+  branches: [],
+  doctors: [],
+  patients: [],
+  patientsMeta: {
+  total: 0,
+  page: 1,
+  limit: 10,
+  pages: 1
+},
+  specialties: [],
+  appointments: [],
+  appointmentsMeta: {
+  total: 0,
+  page: 1,
+  limit: 10,
+  pages: 1
+},
+  announcements: [],
+  notifications: [],
+  invoices: [],
+  auditLogs: [],
+  stats: null,
+  doctorMap: {},
+  patientMap: {},
+
+  accounting: {
+  totalsToday: null,
+  totalsMonth: null,
+  ledgerEntries: [],
+  appointmentFinanceRows: [],
+  appointmentFinanceMeta: {
+    total: 0,
+    page: 1,
+    limit: 10,
+    pages: 1
+  },
+  activeAppointmentFinance: null,
+  activeAppointmentEntries: []
+},
+};
+  const titles = {
+    dashboard: 'الرئيسية',
+    branches: 'الفروع',
+    accounting: 'الحسابات',
+    doctors: 'الأطباء',
+    patients: 'المرضى',
+    specialties: 'التخصصات',
+    appointments: 'المواعيد',
+    announcements: 'الإعلانات',
+    subscription: 'الاشتراك',
+    audit: 'سجل العمليات',
+    settings: 'الإعدادات'
+  };
+  
+  /* =========================
+     Helpers
+  ========================= */
+  function esc(value) {
+    if (value === null || value === undefined) return '';
+    return String(value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function formatMoney(value) {
+  const num = Number(value || 0);
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(num);
+}
+
+function moneyText(value) {
+  return `${formatMoney(value)}`;
+}
+
+function financeTypeLabel(type) {
+  const map = {
+    PATIENT_PAYMENT: 'دفعة مريض',
+    PAYMENT_ADJUSTMENT: 'تعديل',
+    REFUND: 'استرجاع',
+    WAIVER: 'إعفاء',
+    RENT: 'إيجار',
+    SALARY: 'رواتب',
+    UTILITIES: 'مرافق',
+    SUPPLIES: 'مستلزمات',
+    MAINTENANCE: 'صيانة',
+    MARKETING: 'تسويق',
+    TAX: 'ضرائب',
+    OTHER_EXPENSE: 'مصروف آخر',
+    OWNER_DRAW: 'سحب مالك',
+    OTHER_INCOME: 'دخل آخر'
+  };
+  return map[type] || type || '—';
+}
+
+function moneyFlowLabel(flow) {
+  const map = {
+    INFLOW: 'إيراد',
+    OUTFLOW: 'مصروف'
+  };
+  return map[flow] || flow || '—';
+}
+
+function paymentMethodLabel(method) {
+  const map = {
+    CASH: 'كاش',
+    CARD: 'بطاقة',
+    INSTAPAY: 'InstaPay',
+    VODAFONE_CASH: 'Vodafone Cash',
+    BANK_TRANSFER: 'تحويل بنكي',
+    OTHER: 'أخرى'
+  };
+  return map[method] || method || '—';
+}
+
+function paymentBadge(status) {
+  const map = {
+    UNPAID: ['غير مدفوع', 'bg-no'],
+    PARTIAL: ['مدفوع جزئيًا', 'bg-pn'],
+    PAID: ['مدفوع', 'bg-ok'],
+    WAIVED: ['معفى', 'bg-pr'],
+    REFUNDED: ['مسترجع', 'bg-bl']
+  };
+  const [label, cls] = map[status] || [status || '—', 'bg-bl'];
+  return `<span class="bg ${cls}">${label}</span>`;
+}
+
+function flowBadge(flow) {
+  if (flow === 'INFLOW') return `<span class="bg bg-ok">إيراد</span>`;
+  if (flow === 'OUTFLOW') return `<span class="bg bg-no">مصروف</span>`;
+  return `<span class="bg bg-bl">${flow || '—'}</span>`;
+}
+  
+  function shortId(v) {
+    if (!v) return '—';
+    return String(v).slice(0, 8);
+  }
+  
+  function ini(name) {
+    if (!name) return 'NA';
+    const parts = String(name).trim().split(/\s+/).filter(Boolean);
+    return (parts[0]?.[0] || '') + (parts[1]?.[0] || '');
+  }
+  
+  function ncol(seed) {
+    const colors = [
+      'linear-gradient(135deg,#4C8DFF,#7AA7FF)',
+      'linear-gradient(135deg,#1EC98F,#58D9AE)',
+      'linear-gradient(135deg,#9572F5,#B59AF9)',
+      'linear-gradient(135deg,#F5A623,#F8BE5B)',
+      'linear-gradient(135deg,#E8555A,#F07B7F)'
+    ];
+    let sum = 0;
+    for (const ch of String(seed || 'x')) sum += ch.charCodeAt(0);
+    return colors[sum % colors.length];
+  }
+  
+  function fmtDate(v) {
+    if (!v) return '—';
+    const d = new Date(v);
+    if (Number.isNaN(d.getTime())) return v;
+    return d.toLocaleDateString('ar-EG', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  }
+  
+  function fmtDateTime(v) {
+    if (!v) return '—';
+    const d = new Date(v);
+    if (Number.isNaN(d.getTime())) return v;
+    return d.toLocaleString('ar-EG', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit'
+    });
+  }
+  
+  function fmtTime(v) {
+    if (!v) return '—';
+    const t = String(v).slice(0, 5);
+    const [hh, mm] = t.split(':').map(Number);
+    if (Number.isNaN(hh) || Number.isNaN(mm)) return t;
+    const d = new Date();
+    d.setHours(hh, mm, 0, 0);
+    return d.toLocaleTimeString('ar-EG', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
+  
+  function normalizePhone(phone) {
+    return String(phone || '').replace(/\D/g, '');
+  }
+  
+  function toast(message, type = 'ok') {
+    const el = document.getElementById('toast');
+    const tx = document.getElementById('toastTx');
+    if (!el || !tx) return;
+    tx.textContent = message;
+    el.className = `toast sh ${type}`;
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('sh'), 2500);
+  }
+  
+  function stBadge(status) {
+    const map = {
+      ACTIVE: ['نشط', 'bg-ok'],
+      INACTIVE: ['غير نشط', 'bg-no'],
+      PENDING: ['قيد الانتظار', 'bg-pn'],
+      CONFIRMED: ['مؤكد', 'bg-bl'],
+      COMPLETED: ['مكتمل', 'bg-ok'],
+      CANCELLED: ['ملغي', 'bg-no'],
+      NO_SHOW: ['لم يحضر', 'bg-pr'],
+      TRUE: ['نعم', 'bg-bl'],
+      FALSE: ['لا', 'bg-no']
+    };
+    const key = String(status ?? '').toUpperCase();
+    const [label, cls] = map[key] || [status || '—', 'bg-bl'];
+    return `<span class="bg ${cls}">${esc(label)}</span>`;
+  }
+  
+  function emptyHtml(title, desc, icon = 'ri-inbox-line', actionHtml = '') {
+    return `
+      <div class="empty">
+        <i class="${icon}"></i>
+        <h4>${esc(title)}</h4>
+        <p>${esc(desc)}</p>
+        ${actionHtml || ''}
+      </div>
+    `;
+  }
+  
+  function emptyRow(colspan, title, icon = 'ri-inbox-line', desc = '') {
+    return `
+      <tr>
+        <td colspan="${colspan}">
+          ${emptyHtml(title, desc || '', icon)}
+        </td>
+      </tr>
+    `;
+  }
+  
+  function setHeaderBranch(branch) {
+  const el = document.getElementById('hdBranchName');
+  if (!el) return;
+  el.textContent = branch?.branch_name || 'الفرع الرئيسي';
+}
+
+function getCurrentBranch() {
+  if (state.currentBranch && String(state.currentBranch.id) === String(currentBranchId)) {
+    return state.currentBranch;
+  }
+
+  if (currentBranchId) {
+    const found = state.branches.find(
+      b => String(b.id) === String(currentBranchId)
+    );
+    if (found) return found;
+  }
+
+  return state.branches.find(b => b.is_default_branch) || state.branches[0] || null;
+}
+
+  function updateCurrentBranchState(branch) {
+    if (!branch) return;
+    state.currentBranch = branch;
+    currentBranchId = String(branch.id || '');
+    currentBranchName = branch.branch_name || 'الفرع الرئيسي';
+
+    localStorage.setItem('current_branch_id', currentBranchId);
+    localStorage.setItem('current_branch_name', currentBranchName);
+
+    setHeaderBranch(branch);
+  }
+
+  function buildBranchJoinLinkFromAssets(assets) {
+    return assets?.join_url || '';
+  }
+
+  async function loadAccountingPage() {
+  await Promise.all([
+    loadAccountingTotals(),
+    loadAccountingLedger(),
+    loadAccountingAppointmentRows(1)
+  ]);
+}
+  async function copyTextValue(text, copiedElId = null) {
+    if (!text) return;
+    await navigator.clipboard.writeText(text);
+
+    if (copiedElId) {
+      const el = document.getElementById(copiedElId);
+      if (el) {
+        el.style.display = 'inline';
+        clearTimeout(el._t);
+        el._t = setTimeout(() => {
+          el.style.display = 'none';
+        }, 1400);
+      }
+    }
+
+    toast('تم النسخ');
+  }
+  
+  /* =========================
+     API
+  ========================= */
+  async function api(path, opt = {}) {
+    const {
+      method = 'GET',
+      body,
+      params,
+      useForm = false
+    } = opt;
+  
+    let url = API + path;
+    if (params) {
+      const q = new URLSearchParams();
+      for (const [k, v] of Object.entries(params)) {
+        if (v !== null && v !== undefined && v !== '') q.set(k, v);
+      }
+      if (q.toString()) url += '?' + q.toString();
+    }
+  
+    const headers = {};
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    if (body && !useForm) headers['Content-Type'] = 'application/json';
+  
+    let payload;
+    if (body) {
+      if (useForm) {
+        payload = body;
+      } else {
+        payload = JSON.stringify(body);
+      }
+    }
+  
+    const res = await fetch(url, {
+      method,
+      headers,
+      body: payload
+    });
+  
+    if (res.status === 401) {
+      toast('انتهت الجلسة، سجل الدخول مرة أخرى', 'err');
+      window.location.href = '/login';
+      throw new Error('Unauthorized');
+    }
+  
+    if (!res.ok) {
+      let errText = 'حدث خطأ غير متوقع';
+      try {
+        const err = await res.json();
+        errText = err.detail || err.message || errText;
+      } catch (_) {}
+      toast(errText, 'err');
+      throw new Error(errText);
+    }
+  
+    if (res.status === 204) return null;
+    return await res.json();
+  }
+  
+  /* =========================
+     Navigation
+  ========================= */
+  function navigateTo(pg) {
+    document.querySelectorAll('.sb-item[data-pg]').forEach(e => e.classList.remove('act'));
+    document.querySelector(`.sb-item[data-pg="${pg}"]`)?.classList.add('act');
+  
+    document.querySelectorAll('.sec').forEach(e => e.classList.remove('act'));
+    document.getElementById(`pg-${pg}`)?.classList.add('act');
+  
+    document.getElementById('hdTitle').textContent = titles[pg] || 'لوحة الإدارة';
+    document.getElementById('sb').classList.remove('op');
+  
+    loadPage(pg);
+  }
+  
+  document.querySelectorAll('.sb-item[data-pg]').forEach(item => {
+    item.addEventListener('click', () => navigateTo(item.dataset.pg));
+  });
+  
+  /* =========================
+     Modals / Panels
+  ========================= */
+  function openModal(name) {
+    document.getElementById(`mo-${name}`)?.classList.add('sh');
+  }
+  function closeModal(name) {
+    document.getElementById(`mo-${name}`)?.classList.remove('sh');
+  }
+  function closeAllModals() {
+    document.querySelectorAll('.mo').forEach(m => m.classList.remove('sh'));
+  }
+  function toggleNotifPanel() {
+    const p = document.getElementById('notifPanel');
+    const o = document.getElementById('panelOvl');
+    p.classList.toggle('sh');
+    o.classList.toggle('sh');
+  }
+  function openDetailPanel(title, html, footerHtml = '') {
+    document.getElementById('detailTitle').textContent = title;
+    document.getElementById('detailBody').innerHTML = html;
+    document.getElementById('detailFt').innerHTML = footerHtml;
+    document.getElementById('detailPanel').classList.add('sh');
+    document.getElementById('panelOvl').classList.add('sh');
+  }
+  function closeAllPanels() {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('sh'));
+    document.getElementById('panelOvl').classList.remove('sh');
+  }
+  
+  function confirmAction(title, msg, onConfirm) {
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmMsg').textContent = msg;
+    const btn = document.getElementById('confirmBtn');
+    btn.onclick = async () => {
+      try {
+        await onConfirm();
+        closeModal('confirm');
+      } catch (_) {}
+    };
+    openModal('confirm');
+  }
+  
+  /* =========================
+     Branch copy helpers
+  ========================= */
+  function buildBranchJoinLink(branch) {
+    if (!branch) return '';
+    const slug = branch.branch_slug || '';
+    if (!slug) return '';
+    return `${window.location.origin}/join/${slug}`;
+  }
+  
+  async function copyTextValue(text, copiedElId = null) {
+    if (!text) return;
+    await navigator.clipboard.writeText(text);
+    if (copiedElId) {
+      const el = document.getElementById(copiedElId);
+      if (el) {
+        el.style.display = 'inline';
+        clearTimeout(el._t);
+        el._t = setTimeout(() => (el.style.display = 'none'), 1400);
+      }
+    }
+    toast('تم النسخ');
+  }
+  
+  async function copyCurrentBranchCode() {
+  const code =
+    state.currentJoinAssets?.join_code ||
+    state.currentBranch?.join_code ||
+    state.currentBranch?.clinic_id ||
+    '';
+
+  await copyTextValue(code, 'branchCopied');
+}
+
+async function copyBranchCode() {
+  const val = document.getElementById('branchJoinCode')?.value || '';
+  await copyTextValue(val);
+}
+
+async function copyBranchLink() {
+  const val = document.getElementById('branchJoinLink')?.value || '';
+  await copyTextValue(val);
+}
+
+function downloadBranchQr() {
+  const joinUrl = document.getElementById('branchJoinLink')?.value || '';
+  if (!joinUrl) return toast('رابط الانضمام غير متوفر', 'err');
+
+  // مؤقتًا: افتح مولد QR جاهز
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=800x800&data=${encodeURIComponent(joinUrl)}`;
+  window.open(qrUrl, '_blank');
+}
+  
+  /* =========================
+     Dashboard
+  ========================= */
+  async function loadDashboard() {
+    try {
+      const data = await api('/clinic/dashboard');
+      state.stats = data || null;
+  
+      document.getElementById('sDocs').textContent = data?.total_doctors ?? '0';
+      document.getElementById('sPats').textContent = data?.total_patients ?? '0';
+      document.getElementById('sAppts').textContent = data?.total_appointments ?? '0';
+      document.getElementById('sPend').textContent = data?.pending_appointments ?? '0';
+      document.getElementById('sComp').textContent = data?.completed_appointments ?? '0';
+      document.getElementById('sBranches').textContent = state.branches.length || '0';
+    } catch (_) {}
+  
+    try {
+      await Promise.all([loadDoctors(false), loadPatients(1)]);
+      const appointments = await api('/appointments/');
+      state.appointments = appointments.items || [];
+      renderRecentAppointments(state.appointments.slice(0, 8));
+    } catch (_) {
+      renderRecentAppointments([]);
+    }
+  }
+  
+  function renderRecentAppointments(items) {
+    const tb = document.getElementById('recentTb');
+    if (!tb) return;
+  
+    if (!items.length) {
+      tb.innerHTML = emptyRow(5, 'لا توجد مواعيد حديثة', 'ri-calendar-line', 'سيظهر هنا أحدث نشاط للمواعيد');
+      return;
+    }
+  
+    tb.innerHTML = items.map(x => `
+      <tr>
+        <td>${esc(x.appointment_number)}</td>
+        <td>${esc(state.patientMap[x.patient_id] || shortId(x.patient_id))}</td>
+        <td>${esc(state.doctorMap[x.doctor_id] || shortId(x.doctor_id))}</td>
+        <td>${fmtDate(x.date)}</td>
+        <td>${fmtTime(x.start_time)}</td>
+        <td>${stBadge(x.status)}</td>
+      </tr>
+    `).join('');
+  }
+  
+  /* =========================
+     Branches
+  ========================= */
+  async function loadBranches(render = true) {
+  try {
+    const data = await api('/branches/');
+    state.branches = data || [];
+
+    const selected = getCurrentBranch();
+    if (selected) {
+      state.currentBranch = selected;
+      setHeaderBranch(selected);
+    }
+
+    if (render) renderBranches(state.branches);
+
+    await loadCurrentBranchDetails();
+    await loadCurrentJoinAssets();
+  } catch (_) {
+    state.branches = [];
+    if (render) renderBranches([]);
+  }
+}
+
+  async function loadCurrentBranchDetails() {
+    const branch = getCurrentBranch();
+    if (!branch?.id) return;
+
+    try {
+      const data = await api(`/branches/${branch.id}`);
+      state.currentBranch = data;
+      updateCurrentBranchState(data);
+      fillBranchSettings();
+    } catch (_) {}
+  }
+
+  async function loadCurrentJoinAssets() {
+  const branch = getCurrentBranch();
+  if (!branch?.id) return;
+
+  try {
+    const data = await api(`/branches/${branch.id}/join-assets`);
+    state.currentJoinAssets = data || null;
+    fillJoinAssets();
+  } catch (_) {
+    state.currentJoinAssets = null;
+  }
+}
+  
+function renderBranches(branches) {
+  const tb = document.getElementById('branchTb');
+  if (!tb) return;
+
+  if (!branches.length) {
+    tb.innerHTML = `
+      <tr>
+        <td colspan="7">
+          ${emptyHtml(
+            'لا توجد فروع حتى الآن',
+            'أضف أول فرع للبدء',
+            'ri-git-branch-line',
+            '<button class="btn btn-p" onclick="openBranchModal()"><i class="ri-add-line"></i>إضافة فرع</button>'
+          )}
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tb.innerHTML = branches.map(b => `
+    <tr>
+      <td>${esc(b.branch_name || 'الفرع الرئيسي')}</td>
+      <td>${esc(b.city || '—')}</td>
+      <td>${esc(b.area || '—')}</td>
+      <td>${esc(b.phone || '—')}</td>
+      <td>${b.is_active ? '<span class="bg bg-ok">نشط</span>' : '<span class="bg bg-no">غير نشط</span>'}</td>
+      <td>${b.is_default_branch ? '<span class="bg bg-bl">نعم</span>' : '—'}</td>
+      <td>
+        <div class="ra">
+          <button title="عرض" onclick="viewBranch('${b.id}')"><i class="ri-eye-line"></i></button>
+          <button title="تعديل" onclick="editBranch('${b.id}')"><i class="ri-edit-line"></i></button>
+          <button title="اختيار" onclick="selectCurrentBranch('${b.id}')"><i class="ri-check-line"></i></button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+  
+  function filterBranches() {
+    const q = (document.getElementById('branchSrch')?.value || '').trim().toLowerCase();
+    if (!q) return renderBranches(state.branches);
+    renderBranches(
+      state.branches.filter(b =>
+        `${b.branch_name || ''} ${b.city || ''} ${b.area || ''} ${b.phone || ''}`.toLowerCase().includes(q)
+      )
+    );
+  }
+  
+  function openBranchModal(branch = null) {
+  document.getElementById('branchEditId').value = branch?.id || '';
+  document.getElementById('branchMoTitle').textContent = branch ? 'تعديل فرع' : 'إضافة فرع';
+  document.getElementById('branchSubmitBtn').innerHTML = branch
+    ? '<i class="ri-save-line"></i>حفظ الفرع'
+    : '<i class="ri-add-line"></i>حفظ الفرع';
+
+  document.getElementById('branchMoName').value = branch?.branch_name || '';
+  document.getElementById('branchMoPhone').value = branch?.phone || '';
+  document.getElementById('branchMoCity').value = branch?.city || '';
+  document.getElementById('branchMoArea').value = branch?.area || '';
+  document.getElementById('branchMoAddress').value = branch?.address || '';
+  document.getElementById('branchMoSlug').value = branch?.branch_slug || '';
+  document.getElementById('branchMoCode').value = branch?.join_code || branch?.clinic_id || '';
+
+  openModal('branch');
+}
+
+function editBranch(id) {
+  const branch = state.branches.find(b => String(b.id) === String(id));
+  if (branch) openBranchModal(branch);
+}
+
+async function submitBranch() {
+  const editId = document.getElementById('branchEditId').value;
+
+  const body = {
+    branch_name: document.getElementById('branchMoName').value.trim(),
+    phone: document.getElementById('branchMoPhone').value.trim() || null,
+    city: document.getElementById('branchMoCity').value.trim() || null,
+    area: document.getElementById('branchMoArea').value.trim() || null,
+    address: document.getElementById('branchMoAddress').value.trim() || null,
+    branch_slug: document.getElementById('branchMoSlug').value.trim() || null,
+    join_code: document.getElementById('branchMoCode').value.trim() || null
+  };
+
+  if (!body.branch_name) return toast('اسم الفرع مطلوب', 'err');
+
+  try {
+    if (editId) {
+      await api(`/branches/${editId}`, { method: 'PUT', body });
+      toast('تم تحديث الفرع');
+    } else {
+      await api('/branches/', { method: 'POST', body });
+      toast('تمت إضافة الفرع');
+    }
+
+    closeModal('branch');
+    await loadBranches(true);
+  } catch (_) {}
+}
+  
+function viewBranch(id) {
+  const b = state.branches.find(x => String(x.id) === String(id));
+  if (!b) return;
+
+  const joinUrl = b.branch_slug ? `${window.location.origin}/join/${b.branch_slug}` : '';
+
+  const html = `
+    <div class="sett-card" style="padding:0;border:none;box-shadow:none;margin:0">
+      <div class="fr">
+        <div class="fg"><label>اسم الفرع</label><input value="${esc(b.branch_name || 'الفرع الرئيسي')}" readonly></div>
+        <div class="fg"><label>الهاتف</label><input class="ltr-input" value="${esc(b.phone || '')}" readonly></div>
+        <div class="fg"><label>المدينة</label><input value="${esc(b.city || '')}" readonly></div>
+        <div class="fg"><label>المنطقة</label><input value="${esc(b.area || '')}" readonly></div>
+      </div>
+      <div class="fg"><label>العنوان</label><input value="${esc(b.address || '')}" readonly></div>
+      <div class="fr">
+        <div class="fg"><label>كود الفرع</label><input class="ltr-input" value="${esc(b.join_code || b.clinic_id || '')}" readonly></div>
+        <div class="fg"><label>الرابط المختصر</label><input class="ltr-input" value="${esc(b.branch_slug || '')}" readonly></div>
+      </div>
+      <div class="fg"><label>رابط الانضمام</label><input class="ltr-input" value="${esc(joinUrl)}" readonly></div>
+    </div>
+  `;
+
+  const footer = `
+    <button class="btn btn-g" onclick="copyTextValue('${esc(b.join_code || b.clinic_id || '')}')"><i class="ri-file-copy-line"></i>نسخ الكود</button>
+    <button class="btn btn-g" onclick="copyTextValue('${esc(joinUrl)}')"><i class="ri-links-line"></i>نسخ الرابط</button>
+    <button class="btn btn-p" onclick="selectCurrentBranch('${b.id}')"><i class="ri-check-line"></i>اختيار هذا الفرع</button>
+  `;
+
+  openDetailPanel('تفاصيل الفرع', html, footer);
+}
+  
+async function selectCurrentBranch(id) {
+  try {
+    const data = await api(`/branches/${id}/switch-context`, {
+      method: 'POST'
+    });
+
+    // 1) save new token/context
+    token = data.access_token;
+    localStorage.setItem('access_token', data.access_token);
+
+    currentBranchId = String(data.branch_id);
+    currentBranchName = data.branch_name || 'الفرع الرئيسي';
+
+    localStorage.setItem('current_branch_id', currentBranchId);
+    localStorage.setItem('current_branch_name', currentBranchName);
+
+    // 2) update UI state immediately
+    state.currentBranch = {
+      ...(state.currentBranch || {}),
+      id: data.branch_id,
+      branch_name: data.branch_name || 'الفرع الرئيسي',
+      branch_slug: data.branch_slug || null,
+      clinic_id: data.clinic_id || null
+    };
+
+    // 3) update top header immediately
+    const hd = document.getElementById('hdBranchName');
+    if (hd) {
+      hd.textContent = currentBranchName;
+    }
+
+    closeAllPanels();
+    toast('تم تغيير الفرع الحالي');
+
+    // 4) reload branch-dependent data
+    await loadBranches(true);
+    await loadCurrentBranchDetails();
+    await loadCurrentJoinAssets();
+
+    const activePage =
+      document.querySelector('.sec.act')?.id?.replace('pg-', '') || 'dashboard';
+
+    await loadPage(activePage);
+
+  } catch (_) {}
+}
+  
+  async function submitBranch() {
+    const editId = document.getElementById('branchEditId').value;
+    const body = {
+      branch_name: document.getElementById('branchMoName').value.trim(),
+      phone: document.getElementById('branchMoPhone').value.trim() || null,
+      city: document.getElementById('branchMoCity').value.trim() || null,
+      area: document.getElementById('branchMoArea').value.trim() || null,
+      address: document.getElementById('branchMoAddress').value.trim() || null,
+      branch_slug: document.getElementById('branchMoSlug').value.trim() || null,
+      join_code: document.getElementById('branchMoCode').value.trim() || null
+    };
+  
+    if (!body.branch_name) {
+      return toast('اسم الفرع مطلوب', 'err');
+    }
+  
+    try {
+      if (editId) {
+        await api(`/branches/${editId}`, { method: 'PUT', body });
+        toast('تم تحديث بيانات الفرع');
+      } else {
+        await api('/branches/', { method: 'POST', body });
+        toast('تمت إضافة الفرع');
+      }
+  
+      closeModal('branch');
+      await loadBranches(true);
+  
+      document.getElementById('sBranches').textContent = state.branches.length || '0';
+    } catch (_) {}
+  }
+  
+  /* =========================
+     Doctors
+  ========================= */
+  async function loadDoctors(render = true) {
+    try {
+      const data = await api('/doctors/');
+      state.doctors = data || [];
+      state.doctorMap = {};
+      state.doctors.forEach(d => {
+        state.doctorMap[d.profile.id] = d.user.name;
+      });
+  
+      if (render) renderDoctors(state.doctors);
+    } catch (_) {
+      state.doctors = [];
+      if (render) renderDoctors([]);
+    }
+  }
+  
+  function renderDoctors(doctors) {
+    const tb = document.getElementById('docTb');
+    if (!tb) return;
+  
+    if (!doctors.length) {
+      tb.innerHTML = `
+        <tr>
+          <td colspan="6">
+            ${emptyHtml(
+              'لا يوجد أطباء حتى الآن',
+              'أضف أول طبيب وربطه بتخصص داخل العيادة',
+              'ri-stethoscope-line',
+              '<button class="btn btn-p" onclick="openModal(\'doctor\')"><i class="ri-add-line"></i>إضافة طبيب</button>'
+            )}
+          </td>
+        </tr>
+      `;
+      return;
+    }
+  
+    tb.innerHTML = doctors.map(d => {
+      const rating = Math.round(d.profile?.rating || 0);
+      return `
+        <tr>
+          <td>
+            <div class="u-cell">
+              <div class="u-av" style="background:${ncol(d.user.name)}">${esc(ini(d.user.name))}</div>
+              <div>
+                <div class="u-nm">${esc(d.user.name)}</div>
+                <div class="u-sub">${esc(d.user.email || d.user.phone_number || '—')}</div>
+              </div>
+            </div>
+          </td>
+          <td>${esc(d.specialty?.name || '—')}</td>
+          <td>${esc(d.profile?.license_number || '—')}</td>
+          <td>${'★'.repeat(rating)}${'☆'.repeat(5 - rating)} <span style="color:var(--dim);font-size:.72rem">(${d.profile?.total_reviews || 0})</span></td>
+          <td>${d.user?.is_active ? '<span class="bg bg-ok">نشط</span>' : '<span class="bg bg-no">غير نشط</span>'}</td>
+          <td>
+            <div class="ra">
+              <button title="عرض" onclick="viewDoctor('${d.user.id}')"><i class="ri-eye-line"></i></button>
+              <button title="تعديل" onclick="editDoctor('${d.user.id}')"><i class="ri-edit-line"></i></button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+  
+  function filterDoctors() {
+    const q = (document.getElementById('docSrch')?.value || '').trim().toLowerCase();
+    if (!q) return renderDoctors(state.doctors);
+    renderDoctors(
+      state.doctors.filter(d =>
+        `${d.user.name || ''} ${d.user.email || ''} ${d.user.phone_number || ''} ${d.specialty?.name || ''}`.toLowerCase().includes(q)
+      )
+    );
+  }
+  
+  function editDoctor(id) {
+    const d = state.doctors.find(x => String(x.user.id) === String(id));
+    if (!d) return;
+  
+    document.getElementById('docEditId').value = d.user.id;
+    document.getElementById('docMoTitle').textContent = 'تعديل طبيب';
+    document.getElementById('docSubmitBtn').innerHTML = '<i class="ri-save-line"></i>حفظ الطبيب';
+    document.getElementById('docPwReq').textContent = '(اختياري)';
+    document.getElementById('docNm').value = d.user.name || '';
+    document.getElementById('docEm').value = d.user.email || '';
+    document.getElementById('docPh').value = d.user.phone_number || '';
+    document.getElementById('docPw').value = '';
+    document.getElementById('docSp').value = d.profile?.specialty_id || '';
+    document.getElementById('docLic').value = d.profile?.license_number || '';
+    document.getElementById('docBio').value = d.profile?.bio || '';
+    document.getElementById('docGn').value = d.user.gender || '';
+    document.getElementById('docDob').value = d.user.date_of_birth || '';
+  
+    openModal('doctor');
+  }
+  
+  function openNewDoctorModal() {
+    document.getElementById('docEditId').value = '';
+    document.getElementById('docMoTitle').textContent = 'إضافة طبيب';
+    document.getElementById('docSubmitBtn').innerHTML = '<i class="ri-add-line"></i>حفظ الطبيب';
+    document.getElementById('docPwReq').textContent = '*';
+    ['docNm','docEm','docPh','docPw','docLic','docBio','docDob'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('docSp').value = '';
+    document.getElementById('docGn').value = '';
+    openModal('doctor');
+  }
+  
+  async function submitDoctor() {
+    const editId = document.getElementById('docEditId').value;
+    const password = document.getElementById('docPw').value;
+  
+    const body = {
+      name: document.getElementById('docNm').value.trim(),
+      email: document.getElementById('docEm').value.trim() || null,
+      phone_number: document.getElementById('docPh').value.trim() || null,
+      specialty_id: document.getElementById('docSp').value || null,
+      license_number: document.getElementById('docLic').value.trim() || null,
+      bio: document.getElementById('docBio').value.trim() || null,
+      gender: document.getElementById('docGn').value || null,
+      date_of_birth: document.getElementById('docDob').value || null
+    };
+  
+    if (!body.name) return toast('اسم الطبيب مطلوب', 'err');
+    if (!editId && !password) return toast('كلمة المرور مطلوبة', 'err');
+    if (!editId) body.password = password;
+  
+    try {
+      if (editId) {
+        await api(`/doctors/${editId}`, { method: 'PUT', body });
+        toast('تم تحديث بيانات الطبيب');
+      } else {
+        await api('/doctors/', { method: 'POST', body });
+        toast('تمت إضافة الطبيب');
+      }
+      closeModal('doctor');
+      await loadDoctors(true);
+    } catch (_) {}
+  }
+  
+  function viewDoctor(id) {
+    const d = state.doctors.find(x => String(x.user.id) === String(id));
+    if (!d) return;
+  
+    const html = `
+      <div style="text-align:center;margin-bottom:20px">
+        <div class="u-av" style="width:56px;height:56px;font-size:1.1rem;margin:0 auto 10px;background:${ncol(d.user.name)}">${esc(ini(d.user.name))}</div>
+        <div style="font-family:var(--font-d);font-size:1.1rem;font-weight:600">${esc(d.user.name)}</div>
+        <div style="font-size:.82rem;color:var(--dim)">${esc(d.specialty?.name || 'بدون تخصص')}</div>
+        <div style="margin-top:6px">${d.user.is_active ? '<span class="bg bg-ok">نشط</span>' : '<span class="bg bg-no">غير نشط</span>'}</div>
+      </div>
+  
+      <div class="sett-card" style="padding:0;border:none;box-shadow:none;margin:0">
+        <div class="fr">
+          <div class="fg"><label>البريد الإلكتروني</label><input class="ltr-input" value="${esc(d.user.email || '')}" readonly></div>
+          <div class="fg"><label>الهاتف</label><input class="ltr-input" value="${esc(d.user.phone_number || '')}" readonly></div>
+          <div class="fg"><label>النوع</label><input value="${esc(d.user.gender || '—')}" readonly></div>
+          <div class="fg"><label>تاريخ الميلاد</label><input value="${esc(d.user.date_of_birth || '—')}" readonly></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label>التخصص</label><input value="${esc(d.specialty?.name || '—')}" readonly></div>
+          <div class="fg"><label>رقم الترخيص</label><input class="ltr-input" value="${esc(d.profile?.license_number || '')}" readonly></div>
+        </div>
+        <div class="fg"><label>النبذة التعريفية</label><textarea readonly>${esc(d.profile?.bio || '')}</textarea></div>
+      </div>
+    `;
+  
+    openDetailPanel('تفاصيل الطبيب', html);
+  }
+  
+  /* =========================
+     Patients
+  ========================= */
+  async function loadPatients(page = 1) {
+  try {
+    const q = document.getElementById('patSrch')?.value?.trim() || '';
+    const status = document.getElementById('patFilt')?.value || 'all';
+    const limit = state.patientsMeta?.limit || 10;
+
+    const data = await api('/patients/', {
+      params: {
+        page,
+        limit,
+        q
+      }
+    });
+
+    let items = data?.items || [];
+
+    // local status filter for now
+    if (status === 'active') {
+      items = items.filter(p => p.user?.is_active);
+    } else if (status === 'pending') {
+      items = items.filter(p => !p.user?.is_active);
+    }
+
+    state.patients = items;
+    state.patientsMeta = {
+      total: data?.total || 0,
+      page: data?.page || page,
+      limit: data?.limit || limit,
+      pages: data?.pages || 1
+    };
+
+    // refresh patient map if needed elsewhere
+    state.patientMap = {};
+    (data?.items || []).forEach(p => {
+      if (p.profile?.id) {
+        state.patientMap[p.profile.id] = p.user?.name || '';
+      }
+    });
+
+    renderPatients(state.patients);
+    renderPatientsPagination();
+  } catch (_) {
+    state.patients = [];
+    state.patientsMeta = {
+      total: 0,
+      page: 1,
+      limit: 10,
+      pages: 1
+    };
+    renderPatients([]);
+    renderPatientsPagination();
+  }
+}
+  
+function renderPatients(patients) {
+  const tb = document.getElementById('patTb');
+  if (!tb) return;
+
+  if (!patients.length) {
+    tb.innerHTML = `
+      <tr>
+        <td colspan="6">
+          ${emptyHtml('لا يوجد مرضى حتى الآن', 'سيظهر المرضى هنا بعد التسجيل أو الحجز', 'ri-user-heart-line')}
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tb.innerHTML = patients.map(p => `
+    <tr>
+      <td>
+        <div class="u-cell">
+          <div class="u-av" style="background:${ncol(p.user.name)}">${esc(ini(p.user.name))}</div>
+          <div>
+            <div class="u-nm">${esc(p.user.name)}</div>
+            <div class="u-sub">${esc(p.user.email || '—')}</div>
+          </div>
+        </div>
+      </td>
+      <td>${esc(p.user.phone_number || '—')}</td>
+      <td>${esc(p.profile?.blood_type || '—')}</td>
+      <td>${fmtDate(p.profile?.created_at || p.user?.created_at)}</td>
+      <td>${p.user?.is_active ? '<span class="bg bg-ok">نشط</span>' : '<span class="bg bg-pn">قيد الانتظار</span>'}</td>
+      <td>
+        <div class="ra">
+          <button title="عرض" onclick="viewPatient('${p.user.id}')"><i class="ri-eye-line"></i></button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderPatientsPagination() {
+  const info = document.getElementById('patPageInfo');
+  const pageNum = document.getElementById('patPageNumber');
+  const prevBtn = document.getElementById('patPrevBtn');
+  const nextBtn = document.getElementById('patNextBtn');
+
+  if (!info || !pageNum || !prevBtn || !nextBtn) return;
+
+  const meta = state.patientsMeta;
+  const total = meta.total || 0;
+  const page = meta.page || 1;
+  const limit = meta.limit || 10;
+  const pages = meta.pages || 1;
+
+  const start = total === 0 ? 0 : ((page - 1) * limit) + 1;
+  const end = Math.min(page * limit, total);
+
+  info.textContent = total
+    ? `عرض ${start} - ${end} من ${total}`
+    : 'لا توجد نتائج';
+
+  pageNum.textContent = `صفحة ${page} من ${pages}`;
+
+  prevBtn.disabled = page <= 1;
+  nextBtn.disabled = page >= pages;
+
+  prevBtn.style.opacity = page <= 1 ? '0.5' : '1';
+  nextBtn.style.opacity = page >= pages ? '0.5' : '1';
+}
+
+function goToPatientsPage(page) {
+  const pages = state.patientsMeta?.pages || 1;
+  if (page < 1 || page > pages) return;
+  loadPatients(page);
+}
+
+function goToPrevPatientsPage() {
+  const current = state.patientsMeta?.page || 1;
+  goToPatientsPage(current - 1);
+}
+
+function goToNextPatientsPage() {
+  const current = state.patientsMeta?.page || 1;
+  goToPatientsPage(current + 1);
+}
+  
+  function filterPatients() {
+    const q = (document.getElementById('patSrch')?.value || '').trim().toLowerCase();
+    const filt = document.getElementById('patFilt')?.value || 'all';
+  
+    let items = [...state.patients];
+  
+    if (q) {
+      items = items.filter(p =>
+        `${p.user.name || ''} ${p.user.email || ''} ${p.user.phone_number || ''} ${p.profile?.blood_type || ''}`.toLowerCase().includes(q)
+      );
+    }
+  
+    if (filt === 'active') items = items.filter(p => p.user?.is_active);
+    if (filt === 'pending') items = items.filter(p => !p.user?.is_active);
+  
+    renderPatients(items);
+  }
+  
+  function viewPatient(id) {
+    const p = state.patients.find(x => String(x.user.id) === String(id));
+    if (!p) return;
+  
+    const html = `
+      <div style="text-align:center;margin-bottom:20px">
+        <div class="u-av" style="width:56px;height:56px;font-size:1.1rem;margin:0 auto 10px;background:${ncol(p.user.name)}">${esc(ini(p.user.name))}</div>
+        <div style="font-family:var(--font-d);font-size:1.1rem;font-weight:600">${esc(p.user.name)}</div>
+        <div style="margin-top:6px">${p.user.is_active ? '<span class="bg bg-ok">نشط</span>' : '<span class="bg bg-pn">قيد الانتظار</span>'}</div>
+      </div>
+  
+      <div class="sett-card" style="padding:0;border:none;box-shadow:none;margin:0">
+        <div class="fr">
+          <div class="fg"><label>البريد الإلكتروني</label><input class="ltr-input" value="${esc(p.user.email || '')}" readonly></div>
+          <div class="fg"><label>الهاتف</label><input class="ltr-input" value="${esc(p.user.phone_number || '')}" readonly></div>
+          <div class="fg"><label>فصيلة الدم</label><input value="${esc(p.profile?.blood_type || '—')}" readonly></div>
+          <div class="fg"><label>تاريخ الانضمام</label><input value="${fmtDate(p.profile?.created_at || p.user?.created_at)}" readonly></div>
+        </div>
+        <div class="fg"><label>الحساسية</label><textarea readonly>${esc(p.profile?.allergies || '')}</textarea></div>
+        <div class="fg"><label>الأمراض المزمنة</label><textarea readonly>${esc(p.profile?.chronic_conditions || '')}</textarea></div>
+      </div>
+    `;
+  
+    openDetailPanel('تفاصيل المريض', html);
+  }
+  
+  /* =========================
+     Specialties
+  ========================= */
+  async function loadSpecialties(render = true) {
+    try {
+      const data = await api('/specialties/');
+      state.specialties = data || [];
+  
+      fillSpecialtiesSelect();
+  
+      if (render) renderSpecialties(state.specialties);
+    } catch (_) {
+      state.specialties = [];
+      fillSpecialtiesSelect();
+      if (render) renderSpecialties([]);
+    }
+  }
+  
+  function renderSpecialties(items) {
+    const tb = document.getElementById('specTb');
+    if (!tb) return;
+  
+    if (!items.length) {
+      tb.innerHTML = `
+        <tr>
+          <td colspan="3">
+            ${emptyHtml(
+              'لا توجد تخصصات حتى الآن',
+              'أضف تخصصًا لبدء ربط الأطباء به',
+              'ri-heart-add-line',
+              '<button class="btn btn-p" onclick="openModal(\'addSpec\')"><i class="ri-add-line"></i>إضافة تخصص</button>'
+            )}
+          </td>
+        </tr>
+      `;
+      return;
+    }
+  
+    tb.innerHTML = items.map(s => `
+      <tr>
+        <td>${esc(s.name)}</td>
+        <td>${state.doctors.filter(d => String(d.profile?.specialty_id || '') === String(s.id)).length}</td>
+        <td>
+          <div class="ra">
+            <button title="تعديل" onclick="editSpecialty('${s.id}')"><i class="ri-edit-line"></i></button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+  
+  function fillSpecialtiesSelect() {
+    const sel = document.getElementById('docSp');
+    if (!sel) return;
+    sel.innerHTML = `<option value="">— اختر —</option>` + state.specialties.map(s => `
+      <option value="${s.id}">${esc(s.name)}</option>
+    `).join('');
+  }
+  
+  async function submitSpec() {
+    const name = document.getElementById('specNm').value.trim();
+    if (!name) return toast('اسم التخصص مطلوب', 'err');
+  
+    try {
+      await api('/specialties/', {
+        method: 'POST',
+        body: { name }
+      });
+      toast('تمت إضافة التخصص');
+      closeModal('addSpec');
+      document.getElementById('specNm').value = '';
+      await loadSpecialties(true);
+    } catch (_) {}
+  }
+  
+  function editSpecialty(id) {
+    const s = state.specialties.find(x => String(x.id) === String(id));
+    if (!s) return;
+    document.getElementById('editSpecId').value = s.id;
+    document.getElementById('editSpecNm').value = s.name || '';
+    openModal('editSpec');
+  }
+  
+  async function submitEditSpec() {
+    const id = document.getElementById('editSpecId').value;
+    const name = document.getElementById('editSpecNm').value.trim();
+    if (!id || !name) return toast('البيانات غير مكتملة', 'err');
+  
+    try {
+      await api(`/specialties/${id}`, {
+        method: 'PUT',
+        body: { name }
+      });
+      toast('تم تحديث التخصص');
+      closeModal('editSpec');
+      await loadSpecialties(true);
+    } catch (_) {}
+  }
+  
+  /* =========================
+     Appointments
+  ========================= */
+  async function loadAppointments(page = 1) {
+  try {
+    const status = document.getElementById('apptFilt')?.value || '';
+    const date = document.getElementById('apptDate')?.value || '';
+    const q = document.getElementById('apptSearch')?.value?.trim() || '';
+    const limit = state.appointmentsMeta?.limit || 10;
+
+    const data = await api('/appointments/', {
+      params: {
+        page,
+        limit,
+        status,
+        date,
+        q  
+      }
+    });
+
+    state.appointments = data?.items || [];
+    state.appointmentsMeta = {
+      total: data?.total || 0,
+      page: data?.page || page,
+      limit: data?.limit || limit,
+      pages: data?.pages || 1
+    };
+
+    renderAppointments(state.appointments);
+    renderAppointmentsPagination();
+
+  } catch (_) {
+    state.appointments = [];
+    renderAppointments([]);
+    renderAppointmentsPagination();
+  }
+}
+
+document.getElementById('apptSearch')?.addEventListener('input', () => {
+  clearTimeout(window._apptSearchTimer);
+
+  window._apptSearchTimer = setTimeout(() => {
+    loadAppointments(1);
+  }, 350);
+});
+  
+function renderAppointments(items) {
+  const tb = document.getElementById('apptTb');
+  if (!tb) return;
+
+  if (!items.length) {
+    tb.innerHTML = emptyRow(
+      8,
+      'لا توجد مواعيد',
+      'ri-calendar-check-line',
+      'جرّب تغيير الفلاتر أو اختر تاريخًا آخر'
+    );
+    return;
+  }
+
+  tb.innerHTML = items.map(a => `
+    <tr>
+      <td>${esc(a.appointment_number || '—')}</td>
+      <td>${esc(state.patientMap[a.patient_id] || shortId(a.patient_id))}</td>
+      <td>${esc(state.doctorMap[a.doctor_id] || shortId(a.doctor_id))}</td>
+      <td>${fmtDate(a.date)}</td>
+      <td>${fmtTime(a.start_time)} - ${fmtTime(a.end_time)}</td>
+      <td>${stBadge(a.status)}</td>
+      <td>${esc(a.consultation_notes || a.cancellation_reason || '—')}</td>
+      <td>
+        <div class="ra">
+          <button title="تحديث الحالة" onclick="openApptStatusModal('${a.id}','${a.status}')">
+            <i class="ri-edit-line"></i>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderAppointmentsPagination() {
+  const info = document.getElementById('apptPageInfo');
+  const pageNum = document.getElementById('apptPageNumber');
+  const prevBtn = document.getElementById('apptPrevBtn');
+  const nextBtn = document.getElementById('apptNextBtn');
+
+  if (!info || !pageNum || !prevBtn || !nextBtn) return;
+
+  const meta = state.appointmentsMeta;
+  const total = meta.total || 0;
+  const page = meta.page || 1;
+  const limit = meta.limit || 10;
+  const pages = meta.pages || 1;
+
+  const start = total === 0 ? 0 : ((page - 1) * limit) + 1;
+  const end = Math.min(page * limit, total);
+
+  info.textContent = total
+    ? `عرض ${start} - ${end} من ${total}`
+    : 'لا توجد نتائج';
+
+  pageNum.textContent = `صفحة ${page} من ${pages}`;
+
+  prevBtn.disabled = page <= 1;
+  nextBtn.disabled = page >= pages;
+
+  prevBtn.style.opacity = page <= 1 ? '0.5' : '1';
+  nextBtn.style.opacity = page >= pages ? '0.5' : '1';
+}
+
+function goToAppointmentsPage(page) {
+  const pages = state.appointmentsMeta?.pages || 1;
+  if (page < 1 || page > pages) return;
+  loadAppointments(page);
+}
+
+function goToPrevAppointmentsPage() {
+  const current = state.appointmentsMeta?.page || 1;
+  goToAppointmentsPage(current - 1);
+}
+
+function goToNextAppointmentsPage() {
+  const current = state.appointmentsMeta?.page || 1;
+  goToAppointmentsPage(current + 1);
+}
+  
+  function openApptStatusModal(id, currentStatus) {
+    document.getElementById('apptStatusId').value = id;
+    const sel = document.getElementById('apptNewSt');
+    sel.innerHTML = `
+      <option value="PENDING">قيد الانتظار</option>
+      <option value="CONFIRMED">مؤكد</option>
+      <option value="COMPLETED">مكتمل</option>
+      <option value="CANCELLED">ملغي</option>
+      <option value="NO_SHOW">لم يحضر</option>
+    `;
+    sel.value = currentStatus || 'PENDING';
+    document.getElementById('apptNotes').value = '';
+    openModal('apptStatus');
+  }
+  
+  async function submitApptStatus() {
+    const id = document.getElementById('apptStatusId').value;
+    const status = document.getElementById('apptNewSt').value;
+    const notes = document.getElementById('apptNotes').value.trim();
+  
+    if (!id || !status) return toast('بيانات غير مكتملة', 'err');
+  
+    try {
+      await api(`/appointments/${id}/status`, {
+        method: 'PUT',
+        body: {
+          status,
+          notes: notes || null
+        }
+      });
+      toast('تم تحديث حالة الموعد');
+      closeModal('apptStatus');
+      await loadAppointments();
+    } catch (_) {}
+  }
+  
+  /* =========================
+     Announcements
+  ========================= */
+  async function loadAnnouncements() {
+    try {
+      const data = await api('/announcements/');
+      state.announcements = data || [];
+      renderAnnouncements(state.announcements);
+    } catch (_) {
+      state.announcements = [];
+      renderAnnouncements([]);
+    }
+  }
+  
+  function renderAnnouncements(items) {
+    const wrap = document.getElementById('annoList');
+    if (!wrap) return;
+  
+    if (!items.length) {
+      wrap.innerHTML = emptyHtml('لا توجد إعلانات', 'أنشئ أول إعلان لإظهاره هنا', 'ri-megaphone-line');
+      return;
+    }
+  
+    wrap.innerHTML = items.map(a => `
+      <div class="sett-card" style="margin-bottom:12px;padding:18px">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+          <div>
+            <div style="font-weight:700;font-size:.95rem">${esc(a.title)}</div>
+            <div style="font-size:.8rem;color:var(--dim);margin-top:4px">${fmtDateTime(a.created_at)}</div>
+          </div>
+          <div>${a.target_role ? `<span class="bg bg-bl">${esc(a.target_role)}</span>` : '<span class="bg bg-ok">الجميع</span>'}</div>
+        </div>
+        <div style="margin-top:10px;line-height:1.9;color:var(--text)">${esc(a.body)}</div>
+      </div>
+    `).join('');
+  }
+  
+  async function submitAnno() {
+    const title = document.getElementById('annoTi').value.trim();
+    const body = document.getElementById('annoBd').value.trim();
+    const target = document.getElementById('annoTg').value || null;
+  
+    if (!title || !body) return toast('العنوان والرسالة مطلوبان', 'err');
+  
+    try {
+      await api('/announcements/', {
+        method: 'POST',
+        body: {
+          title,
+          body,
+          target_role: target
+        }
+      });
+      toast('تم نشر الإعلان');
+      closeModal('addAnno');
+      document.getElementById('annoTi').value = '';
+      document.getElementById('annoBd').value = '';
+      document.getElementById('annoTg').value = '';
+      await loadAnnouncements();
+    } catch (_) {}
+  }
+  
+  /* =========================
+     Subscription
+  ========================= */
+  async function loadSubscription() {
+    try {
+      const data = await api('/subscription/');
+      document.getElementById('plNm').value = data?.plan || '—';
+      document.getElementById('plSt').value = data?.status || '—';
+      document.getElementById('plMD').value = data?.max_doctors ?? '—';
+      document.getElementById('plMP').value = data?.max_patients ?? '—';
+      document.getElementById('plS').value = fmtDate(data?.started_at);
+      document.getElementById('plE').value = fmtDate(data?.expires_at);
+    } catch (_) {}
+  
+    try {
+      const inv = await api('/subscription/invoices');
+      state.invoices = inv || [];
+      renderInvoices(state.invoices);
+    } catch (_) {
+      state.invoices = [];
+      renderInvoices([]);
+    }
+  }
+  
+  function renderInvoices(items) {
+    const tb = document.getElementById('invTb');
+    if (!tb) return;
+  
+    if (!items.length) {
+      tb.innerHTML = emptyRow(4, 'لا توجد فواتير', 'ri-bill-line');
+      return;
+    }
+  
+    tb.innerHTML = items.map(x => `
+      <tr>
+        <td>${fmtDate(x.created_at)}</td>
+        <td>${esc(x.amount)} ${esc(x.currency || '')}</td>
+        <td>${x.paid ? '<span class="bg bg-ok">مدفوعة</span>' : '<span class="bg bg-pn">غير مدفوعة</span>'}</td>
+        <td>${x.invoice_url ? `<a href="${esc(x.invoice_url)}" target="_blank" rel="noopener">فتح</a>` : '—'}</td>
+      </tr>
+    `).join('');
+  }
+  
+  // finance
+
+  function formatDateLocal(d) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getTodayDateStr() {
+  return formatDateLocal(new Date());
+}
+
+function getMonthStartStr() {
+  const d = new Date();
+  d.setDate(1);
+  return formatDateLocal(d);
+}
+
+async function loadAccountingTotals() {
+  try {
+    const today = getTodayDateStr();
+    const monthStart = getMonthStartStr();
+
+    const [todayTotals, monthTotals] = await Promise.all([
+      api('/finance/totals', {
+        params: { date_from: today, date_to: today }
+      }),
+      api('/finance/totals', {
+        params: { date_from: monthStart, date_to: today }
+      })
+    ]);
+
+    state.accounting.totalsToday = todayTotals;
+    state.accounting.totalsMonth = monthTotals;
+
+    document.getElementById('accTodayIn').textContent = moneyText(todayTotals?.inflow_total || 0);
+    document.getElementById('accTodayOut').textContent = moneyText(todayTotals?.outflow_total || 0);
+    document.getElementById('accTodayNet').textContent = moneyText(todayTotals?.net_total || 0);
+    document.getElementById('accMonthIn').textContent = moneyText(monthTotals?.inflow_total || 0);
+  } catch (_) {
+    document.getElementById('accTodayIn').textContent = '—';
+    document.getElementById('accTodayOut').textContent = '—';
+    document.getElementById('accTodayNet').textContent = '—';
+    document.getElementById('accMonthIn').textContent = '—';
+  }
+}
+async function loadAccountingLedger() {
+  try {
+    const params = {
+      date_from: document.getElementById('accDateFrom')?.value || '',
+      date_to: document.getElementById('accDateTo')?.value || '',
+      money_flow: document.getElementById('accFlowFilter')?.value || '',
+      entry_type: document.getElementById('accTypeFilter')?.value || ''
+    };
+
+    const data = await api('/finance/entries', { params });
+    state.accounting.ledgerEntries = data || [];
+    renderAccountingLedger();
+  } catch (_) {
+    state.accounting.ledgerEntries = [];
+    renderAccountingLedger();
+  }
+}
+
+function renderAccountingLedger() {
+  const tb = document.getElementById('accLedgerTb');
+  if (!tb) return;
+
+  let items = [...state.accounting.ledgerEntries];
+  const q = (document.getElementById('accSearch')?.value || '').trim().toLowerCase();
+
+  if (q) {
+    items = items.filter(x =>
+      `${x.reference || ''} ${x.note || ''}`.toLowerCase().includes(q)
+    );
+  }
+
+  if (!items.length) {
+    tb.innerHTML = emptyRow(9, 'لا توجد حركات مالية', 'ri-exchange-dollar-line', 'جرّب تغيير الفلاتر أو أضف حركة جديدة');
+    return;
+  }
+
+  tb.innerHTML = items.map(x => `
+    <tr>
+      <td>${fmtDate(x.effective_date)}</td>
+      <td>${financeTypeLabel(x.entry_type)}</td>
+      <td>${flowBadge(x.money_flow)}</td>
+      <td>${paymentMethodLabel(x.payment_method)}</td>
+      <td class="ltr-code">${moneyText(x.amount)}</td>
+      <td>${esc(x.reference || '—')}</td>
+      <td>${x.appointment_id ? `<span class="bg bg-bl">موعد</span>` : `<span class="bg bg-pr">عام</span>`}</td>
+      <td>${esc(x.note || '—')}</td>
+      <td>
+        <div class="ra">
+          <button title="عرض" onclick="viewLedgerEntry('${x.id}')"><i class="ri-eye-line"></i></button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function loadAccountingAppointmentRows(page = 1) {
+  try {
+    const q = (document.getElementById('accApptSearch')?.value || '').trim();
+    const payStatus = document.getElementById('accPayStatusFilter')?.value || '';
+    const limit = state.accounting.appointmentFinanceMeta?.limit || 10;
+
+    const data = await api('/appointments/', {
+      params: {
+        page,
+        limit,
+        q: q || '',
+        payment_status: payStatus
+      }
+    });
+
+    let items = data?.items || [];
+
+    // local filter for payment status if your backend appointments endpoint
+    // does not support payment_status yet
+    if (payStatus) {
+      items = items.filter(a => (a.payment_status || '') === payStatus);
+    }
+
+    state.accounting.appointmentFinanceRows = items;
+    state.accounting.appointmentFinanceMeta = {
+      total: data?.total || 0,
+      page: data?.page || page,
+      limit: data?.limit || limit,
+      pages: data?.pages || 1
+    };
+
+    renderAccountingAppointmentRows();
+    renderAccountingAppointmentPagination();
+  } catch (_) {
+    state.accounting.appointmentFinanceRows = [];
+    state.accounting.appointmentFinanceMeta = {
+      total: 0,
+      page: 1,
+      limit: 10,
+      pages: 1
+    };
+    renderAccountingAppointmentRows();
+    renderAccountingAppointmentPagination();
+  }
+}
+
+function renderAccountingAppointmentRows() {
+  const tb = document.getElementById('accApptTb');
+  if (!tb) return;
+
+  const items = [...state.accounting.appointmentFinanceRows];
+
+  const outstanding = items.reduce((sum, a) => sum + Number(a.balance_amount || 0), 0);
+  const unpaidCount = items.filter(a => ['UNPAID', 'PARTIAL'].includes(a.payment_status)).length;
+
+  document.getElementById('accOutstanding').textContent = moneyText(outstanding);
+  document.getElementById('accPendingCount').textContent = String(unpaidCount);
+
+  if (!items.length) {
+    tb.innerHTML = emptyRow(
+      10,
+      'لا توجد بيانات مالية للمواعيد',
+      'ri-calendar-check-line',
+      'لن تظهر هنا إلا المواعيد المرتبطة بالرسوم'
+    );
+    return;
+  }
+
+  tb.innerHTML = items.map(a => `
+    <tr>
+      <td>${esc(a.appointment_number || '—')}</td>
+      <td>${esc(state.patientMap[a.patient_id] || shortId(a.patient_id))}</td>
+      <td>${esc(state.doctorMap[a.doctor_id] || shortId(a.doctor_id))}</td>
+      <td>${fmtDate(a.date)}</td>
+      <td>${stBadge(a.status)}</td>
+      <td>${moneyText(a.fee_amount || 0)}</td>
+      <td>${moneyText(a.total_paid_amount || 0)}</td>
+      <td>${moneyText(a.balance_amount || 0)}</td>
+      <td>${paymentBadge(a.payment_status)}</td>
+      <td>
+        <div class="ra">
+          <button title="إدارة الدفع" onclick="openAppointmentFinanceModal('${a.id}')">
+            <i class="ri-wallet-3-line"></i>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderAccountingAppointmentPagination() {
+  const info = document.getElementById('accApptPageInfo');
+  const pageNum = document.getElementById('accApptPageNumber');
+  const prevBtn = document.getElementById('accApptPrevBtn');
+  const nextBtn = document.getElementById('accApptNextBtn');
+
+  if (!info || !pageNum || !prevBtn || !nextBtn) return;
+
+  const meta = state.accounting.appointmentFinanceMeta;
+  const total = meta.total || 0;
+  const page = meta.page || 1;
+  const limit = meta.limit || 10;
+  const pages = meta.pages || 1;
+
+  const start = total === 0 ? 0 : ((page - 1) * limit) + 1;
+  const end = Math.min(page * limit, total);
+
+  info.textContent = total
+    ? `عرض ${start} - ${end} من ${total}`
+    : 'لا توجد نتائج';
+
+  pageNum.textContent = `صفحة ${page} من ${pages}`;
+
+  prevBtn.disabled = page <= 1;
+  nextBtn.disabled = page >= pages;
+
+  prevBtn.style.opacity = page <= 1 ? '0.5' : '1';
+  nextBtn.style.opacity = page >= pages ? '0.5' : '1';
+}
+
+function goToAccountingAppointmentsPage(page) {
+  const pages = state.accounting.appointmentFinanceMeta?.pages || 1;
+  if (page < 1 || page > pages) return;
+  loadAccountingAppointmentRows(page);
+}
+
+function goToPrevAccountingAppointmentsPage() {
+  const current = state.accounting.appointmentFinanceMeta?.page || 1;
+  goToAccountingAppointmentsPage(current - 1);
+}
+
+function goToNextAccountingAppointmentsPage() {
+  const current = state.accounting.appointmentFinanceMeta?.page || 1;
+  goToAccountingAppointmentsPage(current + 1);
+}
+
+async function openAppointmentFinanceModal(appointmentId) {
+  try {
+    document.getElementById('apptFinanceId').value = appointmentId;
+
+    const [summary, entries] = await Promise.all([
+      api(`/finance/appointments/${appointmentId}`),
+      api(`/finance/appointments/${appointmentId}/entries`)
+    ]);
+
+    state.accounting.activeAppointmentFinance = summary;
+    state.accounting.activeAppointmentEntries = entries || [];
+
+    fillAppointmentFinanceModal(summary);
+    renderAppointmentFinanceEntries(entries || []);
+
+    openModal('apptFinance');
+  } catch (_) {}
+}
+
+function fillAppointmentFinanceModal(summary) {
+  document.getElementById('apptFeeAmount').value = summary?.fee_amount ?? 0;
+  document.getElementById('apptDiscountAmount').value = summary?.discount_amount ?? 0;
+  document.getElementById('apptTotalDue').value = moneyText(summary?.total_due_amount || 0);
+  document.getElementById('apptTotalPaid').value = moneyText(summary?.total_paid_amount || 0);
+  document.getElementById('apptBalance').value = moneyText(summary?.balance_amount || 0);
+  document.getElementById('apptPayStatus').value = financeTypeLabel(summary?.payment_status) === summary?.payment_status
+    ? (summary?.payment_status || '—')
+    : (summary?.payment_status || '—');
+  document.getElementById('apptFinanceNote').value = summary?.payment_note || '';
+
+  const payStatusInput = document.getElementById('apptPayStatus');
+  const map = {
+    UNPAID: 'غير مدفوع',
+    PARTIAL: 'مدفوع جزئيًا',
+    PAID: 'مدفوع',
+    WAIVED: 'معفى',
+    REFUNDED: 'مسترجع'
+  };
+  payStatusInput.value = map[summary?.payment_status] || summary?.payment_status || '—';
+}
+
+function renderAppointmentFinanceEntries(entries) {
+  const tb = document.getElementById('apptFinanceEntriesTb');
+  if (!tb) return;
+
+  if (!entries.length) {
+    tb.innerHTML = emptyRow(7, 'لا توجد حركات لهذا الموعد', 'ri-history-line');
+    return;
+  }
+
+  tb.innerHTML = entries.map(x => `
+    <tr>
+      <td>${fmtDate(x.effective_date)}</td>
+      <td>${financeTypeLabel(x.entry_type)}</td>
+      <td>${flowBadge(x.money_flow)}</td>
+      <td>${paymentMethodLabel(x.payment_method)}</td>
+      <td class="ltr-code">${moneyText(x.amount)}</td>
+      <td>${esc(x.reference || '—')}</td>
+      <td>${esc(x.note || '—')}</td>
+    </tr>
+  `).join('');
+}
+
+async function submitAppointmentFinanceSummary() {
+  const appointmentId = document.getElementById('apptFinanceId').value;
+  if (!appointmentId) return;
+
+  const body = {
+    fee_amount: document.getElementById('apptFeeAmount').value || 0,
+    discount_amount: document.getElementById('apptDiscountAmount').value || 0,
+    payment_note: document.getElementById('apptFinanceNote').value.trim() || null
+  };
+
+  try {
+    const summary = await api(`/finance/appointments/${appointmentId}`, {
+      method: 'PATCH',
+      body
+    });
+
+    state.accounting.activeAppointmentFinance = summary;
+    fillAppointmentFinanceModal(summary);
+
+    toast('تم حفظ الرسوم');
+    await refreshAccountingAfterAppointmentChange(appointmentId);
+  } catch (_) {}
+}
+
+async function submitAppointmentFinanceEntry() {
+  const appointmentId = document.getElementById('apptFinanceId').value;
+  if (!appointmentId) return;
+
+  const body = {
+    entry_type: document.getElementById('apptEntryType').value,
+    money_flow: document.getElementById('apptEntryFlow').value,
+    amount: document.getElementById('apptEntryAmount').value,
+    payment_method: document.getElementById('apptEntryMethod').value || null,
+    reference: document.getElementById('apptEntryRef').value.trim() || null,
+    note: document.getElementById('apptEntryNote').value.trim() || null,
+    effective_date: document.getElementById('apptEntryDate').value || null
+  };
+
+  if (!body.entry_type || !body.money_flow || !body.amount) {
+    return toast('أكمل نوع الحركة والتدفق والمبلغ', 'err');
+  }
+
+  try {
+    await api(`/finance/appointments/${appointmentId}/entries`, {
+      method: 'POST',
+      body
+    });
+
+    toast('تمت إضافة الحركة');
+
+    document.getElementById('apptEntryType').value = '';
+    document.getElementById('apptEntryFlow').value = '';
+    document.getElementById('apptEntryAmount').value = '';
+    document.getElementById('apptEntryMethod').value = '';
+    document.getElementById('apptEntryRef').value = '';
+    document.getElementById('apptEntryNote').value = '';
+    document.getElementById('apptEntryDate').value = '';
+
+    await refreshAccountingAfterAppointmentChange(appointmentId);
+  } catch (_) {}
+}
+
+async function submitCashEntry() {
+  const body = {
+    entry_type: document.getElementById('cashEntryType').value,
+    money_flow: document.getElementById('cashEntryFlow').value,
+    amount: document.getElementById('cashEntryAmount').value,
+    payment_method: document.getElementById('cashEntryMethod').value || null,
+    reference: document.getElementById('cashEntryRef').value.trim() || null,
+    note: document.getElementById('cashEntryNote').value.trim() || null,
+    effective_date: document.getElementById('cashEntryDate').value || null
+  };
+
+  if (!body.entry_type || !body.money_flow || !body.amount) {
+    return toast('أكمل نوع الحركة والتدفق والمبلغ', 'err');
+  }
+
+  try {
+    await api('/finance/entries', {
+      method: 'POST',
+      body
+    });
+
+    toast('تمت إضافة الحركة المالية');
+    closeModal('cashEntry');
+
+    document.getElementById('cashEntryType').value = '';
+    document.getElementById('cashEntryFlow').value = '';
+    document.getElementById('cashEntryAmount').value = '';
+    document.getElementById('cashEntryMethod').value = '';
+    document.getElementById('cashEntryRef').value = '';
+    document.getElementById('cashEntryNote').value = '';
+    document.getElementById('cashEntryDate').value = '';
+
+    await Promise.all([
+      loadAccountingTotals(),
+      loadAccountingLedger()
+    ]);
+  } catch (_) {}
+}
+
+async function refreshAccountingAfterAppointmentChange(appointmentId) {
+  const [summary, entries] = await Promise.all([
+    api(`/finance/appointments/${appointmentId}`),
+    api(`/finance/appointments/${appointmentId}/entries`)
+  ]);
+
+  state.accounting.activeAppointmentFinance = summary;
+  state.accounting.activeAppointmentEntries = entries || [];
+
+  fillAppointmentFinanceModal(summary);
+  renderAppointmentFinanceEntries(entries || []);
+
+  await Promise.all([
+    loadAccountingTotals(),
+    loadAccountingLedger(),
+    loadAccountingAppointmentRows(),
+    loadAppointments?.() || Promise.resolve()
+  ]);
+}
+function viewLedgerEntry(entryId) {
+  const x = state.accounting.ledgerEntries.find(e => String(e.id) === String(entryId));
+  if (!x) return;
+
+  const html = `
+    <div class="sett-card" style="padding:0;border:none;box-shadow:none;margin:0">
+      <div class="fr">
+        <div class="fg"><label>التاريخ</label><input value="${fmtDate(x.effective_date)}" readonly></div>
+        <div class="fg"><label>النوع</label><input value="${financeTypeLabel(x.entry_type)}" readonly></div>
+        <div class="fg"><label>التدفق</label><input value="${moneyFlowLabel(x.money_flow)}" readonly></div>
+        <div class="fg"><label>طريقة الدفع</label><input value="${paymentMethodLabel(x.payment_method)}" readonly></div>
+        <div class="fg"><label>المبلغ</label><input class="ltr-input" value="${moneyText(x.amount)}" readonly></div>
+        <div class="fg"><label>المرجع</label><input class="ltr-input" value="${esc(x.reference || '')}" readonly></div>
+      </div>
+      <div class="fg"><label>الملاحظة</label><textarea readonly>${esc(x.note || '')}</textarea></div>
+    </div>
+  `;
+
+  openDetailPanel('تفاصيل الحركة المالية', html);
+}
+  /* =========================
+     Audit
+  ========================= */
+  async function loadAuditLogs() {
+    try {
+      const q = document.getElementById('auditQ')?.value?.trim() || '';
+      const data = await api('/audit-logs/', { params: { q } });
+      state.auditLogs = data || [];
+      renderAuditLogs(state.auditLogs);
+    } catch (_) {
+      state.auditLogs = [];
+      renderAuditLogs([]);
+    }
+  }
+  
+  function renderAuditLogs(items) {
+    const wrap = document.getElementById('auditList');
+    if (!wrap) return;
+  
+    if (!items.length) {
+      wrap.innerHTML = emptyHtml('لا يوجد سجل عمليات', 'سيظهر هنا تاريخ أهم العمليات داخل النظام', 'ri-shield-check-line');
+      return;
+    }
+  
+    wrap.innerHTML = items.map(log => `
+      <div style="padding:14px 0;border-bottom:1px solid var(--border)">
+        <div style="font-weight:700">${esc(log.action || 'عملية')}</div>
+        <div style="font-size:.8rem;color:var(--dim);margin-top:3px">${esc(log.detail || '')}</div>
+        <div style="font-size:.75rem;color:var(--faint);margin-top:4px">${fmtDateTime(log.created_at)}</div>
+      </div>
+    `).join('');
+  }
+  
+  /* =========================
+     Settings
+  ========================= */
+  async function loadSettings() {
+  await Promise.all([
+    loadGroupInfo(),
+    loadBranches(false)
+  ]);
+
+  fillBranchSettings();
+  fillJoinAssets();
+}
+  
+  async function loadGroupInfo() {
+  try {
+    const data = await api('/clinic-group/me');
+    state.group = data || null;
+    fillGroupSettings();
+  } catch (_) {
+    state.group = null;
+  }
+}
+  
+function fillGroupSettings() {
+  document.getElementById('groupName').value = state.group?.name || '';
+  document.getElementById('groupPhone').value = state.group?.main_phone || '';
+  document.getElementById('groupWebsite').value = state.group?.website || '';
+  document.getElementById('groupLogo').value = state.group?.logo_url || '';
+}
+
+function fillBranchSettings() {
+  const branch = state.currentBranch;
+  if (!branch) return;
+
+  document.getElementById('branchName').value = branch.branch_name || '';
+  document.getElementById('branchPhone').value = branch.phone || '';
+  document.getElementById('branchCity').value = branch.city || '';
+  document.getElementById('branchArea').value = branch.area || '';
+  document.getElementById('branchAddress').value = branch.address || '';
+}
+
+function fillJoinAssets() {
+  const assets = state.currentJoinAssets;
+  if (!assets) return;
+
+  document.getElementById('branchJoinCode').value = assets.join_code || '';
+  document.getElementById('branchSlug').value = assets.branch_slug || '';
+  document.getElementById('branchJoinLink').value = assets.join_url || '';
+}
+  
+  function fillSettingsFromCurrentBranch() {
+    const branch = getCurrentBranch();
+    if (!branch) return;
+  
+    updateCurrentBranchState(branch);
+  
+    document.getElementById('branchName').value = branch.branch_name || '';
+    document.getElementById('branchPhone').value = branch.phone || '';
+    document.getElementById('branchCity').value = branch.city || '';
+    document.getElementById('branchArea').value = branch.area || '';
+    document.getElementById('branchAddress').value = branch.address || '';
+  
+    document.getElementById('branchJoinCode').value = branch.join_code || branch.clinic_id || '';
+    document.getElementById('branchSlug').value = branch.branch_slug || '';
+    document.getElementById('branchJoinLink').value = buildBranchJoinLink(branch);
+  }
+  
+  async function saveGroupSettings() {
+  const body = {
+    name: document.getElementById('groupName').value.trim(),
+    main_phone: document.getElementById('groupPhone').value.trim() || null,
+    website: document.getElementById('groupWebsite').value.trim() || null,
+    logo_url: document.getElementById('groupLogo').value.trim() || null
+  };
+
+  if (!body.name) return toast('اسم الكيان مطلوب', 'err');
+
+  try {
+    await api('/clinic-group/me', {
+      method: 'PUT',
+      body
+    });
+
+    toast('تم حفظ بيانات الكيان');
+    await loadGroupInfo();
+  } catch (_) {}
+}
+  
+async function saveBranchSettings() {
+  const branch = getCurrentBranch();
+  if (!branch?.id) return toast('لم يتم تحديد فرع حالي', 'err');
+
+  const body = {
+    branch_name: document.getElementById('branchName').value.trim(),
+    phone: document.getElementById('branchPhone').value.trim() || null,
+    city: document.getElementById('branchCity').value.trim() || null,
+    area: document.getElementById('branchArea').value.trim() || null,
+    address: document.getElementById('branchAddress').value.trim() || null
+  };
+
+  if (!body.branch_name) return toast('اسم الفرع مطلوب', 'err');
+
+  try {
+    await api(`/branches/${branch.id}`, {
+      method: 'PUT',
+      body
+    });
+
+    toast('تم حفظ بيانات الفرع');
+    await loadBranches(true);
+  } catch (_) {}
+}
+  
+  /* =========================
+     Notifications
+  ========================= */
+  async function loadNotifications() {
+    try {
+      const data = await api('/notifications/');
+      state.notifications = data || [];
+      renderNotifications(state.notifications);
+    } catch (_) {
+      state.notifications = [];
+      renderNotifications([]);
+    }
+  }
+  
+  function renderNotifications(items) {
+    const wrap = document.getElementById('notifList');
+    if (!wrap) return;
+  
+    const unread = items.filter(n => !n.is_read).length;
+    const dot = document.getElementById('notifDot');
+    if (dot) dot.style.display = unread ? 'block' : 'none';
+  
+    if (!items.length) {
+      wrap.innerHTML = emptyHtml('لا توجد إشعارات', 'الإشعارات الجديدة ستظهر هنا', 'ri-notification-3-line');
+      return;
+    }
+  
+    wrap.innerHTML = items.map(n => `
+      <div class="notif-item ${n.is_read ? '' : 'unread'}">
+        <div class="u-av" style="background:${ncol(n.type || n.title)};width:36px;height:36px">${esc((n.title || 'إشعار')[0] || 'إ')}</div>
+        <div style="flex:1">
+          <div style="font-weight:700">${esc(n.title || 'إشعار')}</div>
+          <div style="font-size:.82rem;color:var(--dim);margin-top:3px;line-height:1.7">${esc(n.body || '')}</div>
+          <div style="font-size:.75rem;color:var(--faint);margin-top:4px">${fmtDateTime(n.created_at)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  async function markAllRead() {
+    toast('سنربط تحديد الكل كمقروء مع endpoint الإشعارات');
+  }
+  
+  /* =========================
+     Page loader
+  ========================= */
+  async function loadPage(pg) {
+  switch (pg) {
+    case 'dashboard':
+      await loadDashboard();
+      break;
+    case 'branches':
+      await loadBranches(true);
+      break;
+    case 'doctors':
+      await loadDoctors(true);
+      break;
+    case 'patients':
+      await loadPatients(1);
+      break;
+    case 'specialties':
+      await loadSpecialties(true);
+      break;
+    case 'appointments':
+      await loadAppointments(1);
+      break;
+    case 'announcements':
+      await loadAnnouncements();
+      break;
+    case 'subscription':
+      await loadSubscription();
+      break;
+    case 'audit':
+      await loadAuditLogs();
+      break;
+    case 'settings':
+      await loadSettings();
+      break;
+    case 'accounting':
+        await loadAccountingPage();
+        break;
+  }
+}
+  
+  /* =========================
+     Logout
+  ========================= */
+  function logout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('current_branch_id');
+    localStorage.removeItem('current_branch_name');
+    window.location.href = '/login';
+  }
+  
+  /* =========================
+     Wire events
+  ========================= */
+  document.getElementById('accApptPrevBtn')?.addEventListener('click', goToPrevAccountingAppointmentsPage);
+document.getElementById('accApptNextBtn')?.addEventListener('click', goToNextAccountingAppointmentsPage);
+
+document.getElementById('accApptSearch')?.addEventListener('input', () => {
+  clearTimeout(window._accApptSearchTimer);
+  window._accApptSearchTimer = setTimeout(() => {
+    loadAccountingAppointmentRows(1);
+  }, 350);
+});
+
+document.getElementById('accPayStatusFilter')?.addEventListener('change', () => {
+  loadAccountingAppointmentRows(1);
+});
+
+document.getElementById('accRefreshApptsBtn')?.addEventListener('click', () => {
+  loadAccountingAppointmentRows(1);
+});
+  document.getElementById('apptPrevBtn')?.addEventListener('click', goToPrevAppointmentsPage);
+  document.getElementById('apptNextBtn')?.addEventListener('click', goToNextAppointmentsPage);
+
+  document.getElementById('apptFilt')?.addEventListener('change', () => {
+  loadAppointments(1);
+  });
+
+  document.getElementById('apptDate')?.addEventListener('change', () => {
+    loadAppointments(1);
+  });
+  document.getElementById('branchSrch')?.addEventListener('input', filterBranches);
+  document.getElementById('docSrch')?.addEventListener('input', filterDoctors);
+  document.getElementById('patPrevBtn')?.addEventListener('click', goToPrevPatientsPage);
+  document.getElementById('patNextBtn')?.addEventListener('click', goToNextPatientsPage);
+
+  document.getElementById('patFilt')?.addEventListener('change', () => {
+    loadPatients(1);
+  });
+
+  document.getElementById('patSrch')?.addEventListener('input', () => {
+    clearTimeout(window._patSearchTimer);
+    window._patSearchTimer = setTimeout(() => {
+      loadPatients(1);
+    }, 350);
+  });
+  document.getElementById('auditQ')?.addEventListener('input', loadAuditLogs);
+  document.getElementById('accApplyFiltersBtn')?.addEventListener('click', loadAccountingLedger);
+  document.getElementById('accSearch')?.addEventListener('input', renderAccountingLedger);
+
+  document.getElementById('accApptSearch')?.addEventListener('input', renderAccountingAppointmentRows);
+  document.getElementById('accPayStatusFilter')?.addEventListener('change', renderAccountingAppointmentRows);
+  document.getElementById('accRefreshApptsBtn')?.addEventListener('click', loadAccountingAppointmentRows);
+
+  document.getElementById('cashEntrySubmitBtn')?.addEventListener('click', submitCashEntry);
+  document.getElementById('apptFinanceSaveSummaryBtn')?.addEventListener('click', submitAppointmentFinanceSummary);
+  document.getElementById('apptFinanceAddEntryBtn')?.addEventListener('click', submitAppointmentFinanceEntry);
+  document.getElementById('branchSubmitBtn')?.addEventListener('click', submitBranch);
+  document.getElementById('docSubmitBtn')?.addEventListener('click', submitDoctor);
+  document.getElementById('specSubmitBtn')?.addEventListener('click', submitSpec);
+  document.getElementById('editSpecSubmitBtn')?.addEventListener('click', submitEditSpec);
+  document.getElementById('annoSubmitBtn')?.addEventListener('click', submitAnno);
+  document.getElementById('apptStatusSubmitBtn')?.addEventListener('click', submitApptStatus);
+  
+  document.querySelector('button[onclick="openModal(\'doctor\')"]')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openNewDoctorModal();
+  });
+  
+  /* =========================
+     Init
+  ========================= */
+  async function init() {
+  document.getElementById('sbName').textContent = managerName;
+  document.getElementById('sbAv').textContent = ini(managerName);
+
+  await Promise.all([
+    loadBranches(false),
+    loadNotifications()
+  ]);
+
+  navigateTo('dashboard');
+}
+  
+  init();
+  </script>
+</body>
+</html>
